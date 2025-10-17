@@ -23,8 +23,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHPExcel_RichText_ITextElement
-{
+class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHPExcel_RichText_ITextElement {
     /**
      * Font
      *
@@ -35,10 +34,9 @@ class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHP
     /**
      * Create a new PHPExcel_RichText_Run instance
      *
-     * @param     string        $pText        Text
+     * @param string $pText Text
      */
-    public function __construct($pText = '')
-    {
+    public function __construct($pText = '') {
         // Initialise variables
         $this->setText($pText);
         $this->font = new PHPExcel_Style_Font();
@@ -49,20 +47,18 @@ class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHP
      *
      * @return PHPExcel_Style_Font
      */
-    public function getFont()
-    {
+    public function getFont() {
         return $this->font;
     }
 
     /**
      * Set font
      *
-     * @param    PHPExcel_Style_Font        $pFont        Font
-     * @throws     PHPExcel_Exception
+     * @param PHPExcel_Style_Font $pFont Font
      * @return PHPExcel_RichText_ITextElement
+     * @throws     PHPExcel_Exception
      */
-    public function setFont(PHPExcel_Style_Font $pFont = null)
-    {
+    public function setFont(PHPExcel_Style_Font $pFont = null) {
         $this->font = $pFont;
         return $this;
     }
@@ -72,8 +68,7 @@ class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHP
      *
      * @return string    Hash code
      */
-    public function getHashCode()
-    {
+    public function getHashCode() {
         return md5(
             $this->getText() .
             $this->font->getHashCode() .
@@ -84,8 +79,7 @@ class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHP
     /**
      * Implement PHP __clone to create a deep clone, not just a shallow copy.
      */
-    public function __clone()
-    {
+    public function __clone() {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if (is_object($value)) {

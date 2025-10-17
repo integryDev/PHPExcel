@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
-{
+class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer {
     /**
      * Parent Shape Group Container
      *
@@ -116,8 +115,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param PHPExcel_Shared_Escher_DgContainer_SpgrContainer $parent
      */
-    public function setParent($parent)
-    {
+    public function setParent($parent) {
         $this->parent = $parent;
     }
 
@@ -126,8 +124,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return PHPExcel_Shared_Escher_DgContainer_SpgrContainer
      */
-    public function getParent()
-    {
+    public function getParent() {
         return $this->parent;
     }
 
@@ -136,8 +133,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param boolean $value
      */
-    public function setSpgr($value = false)
-    {
+    public function setSpgr($value = false) {
         $this->spgr = $value;
     }
 
@@ -146,8 +142,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return boolean
      */
-    public function getSpgr()
-    {
+    public function getSpgr() {
         return $this->spgr;
     }
 
@@ -156,8 +151,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param int $value
      */
-    public function setSpType($value)
-    {
+    public function setSpType($value) {
         $this->spType = $value;
     }
 
@@ -166,8 +160,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return int
      */
-    public function getSpType()
-    {
+    public function getSpType() {
         return $this->spType;
     }
 
@@ -176,8 +169,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param int $value
      */
-    public function setSpFlag($value)
-    {
+    public function setSpFlag($value) {
         $this->spFlag = $value;
     }
 
@@ -186,8 +178,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return int
      */
-    public function getSpFlag()
-    {
+    public function getSpFlag() {
         return $this->spFlag;
     }
 
@@ -196,8 +187,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param int $value
      */
-    public function setSpId($value)
-    {
+    public function setSpId($value) {
         $this->spId = $value;
     }
 
@@ -206,8 +196,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return int
      */
-    public function getSpId()
-    {
+    public function getSpId() {
         return $this->spId;
     }
 
@@ -217,8 +206,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      * @param int $property The number specifies the option
      * @param mixed $value
      */
-    public function setOPT($property, $value)
-    {
+    public function setOPT($property, $value) {
         $this->OPT[$property] = $value;
     }
 
@@ -228,8 +216,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      * @param int $property The number specifies the option
      * @return mixed
      */
-    public function getOPT($property)
-    {
+    public function getOPT($property) {
         if (isset($this->OPT[$property])) {
             return $this->OPT[$property];
         }
@@ -241,8 +228,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return array
      */
-    public function getOPTCollection()
-    {
+    public function getOPTCollection() {
         return $this->OPT;
     }
 
@@ -251,8 +237,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param string $value
      */
-    public function setStartCoordinates($value = 'A1')
-    {
+    public function setStartCoordinates($value = 'A1') {
         $this->startCoordinates = $value;
     }
 
@@ -261,8 +246,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return string
      */
-    public function getStartCoordinates()
-    {
+    public function getStartCoordinates() {
         return $this->startCoordinates;
     }
 
@@ -271,8 +255,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param int $startOffsetX
      */
-    public function setStartOffsetX($startOffsetX = 0)
-    {
+    public function setStartOffsetX($startOffsetX = 0) {
         $this->startOffsetX = $startOffsetX;
     }
 
@@ -281,8 +264,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return int
      */
-    public function getStartOffsetX()
-    {
+    public function getStartOffsetX() {
         return $this->startOffsetX;
     }
 
@@ -291,8 +273,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param int $startOffsetY
      */
-    public function setStartOffsetY($startOffsetY = 0)
-    {
+    public function setStartOffsetY($startOffsetY = 0) {
         $this->startOffsetY = $startOffsetY;
     }
 
@@ -301,8 +282,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return int
      */
-    public function getStartOffsetY()
-    {
+    public function getStartOffsetY() {
         return $this->startOffsetY;
     }
 
@@ -311,8 +291,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param string $value
      */
-    public function setEndCoordinates($value = 'A1')
-    {
+    public function setEndCoordinates($value = 'A1') {
         $this->endCoordinates = $value;
     }
 
@@ -321,8 +300,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return string
      */
-    public function getEndCoordinates()
-    {
+    public function getEndCoordinates() {
         return $this->endCoordinates;
     }
 
@@ -331,8 +309,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param int $startOffsetX
      */
-    public function setEndOffsetX($endOffsetX = 0)
-    {
+    public function setEndOffsetX($endOffsetX = 0) {
         $this->endOffsetX = $endOffsetX;
     }
 
@@ -341,8 +318,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return int
      */
-    public function getEndOffsetX()
-    {
+    public function getEndOffsetX() {
         return $this->endOffsetX;
     }
 
@@ -351,8 +327,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @param int $endOffsetY
      */
-    public function setEndOffsetY($endOffsetY = 0)
-    {
+    public function setEndOffsetY($endOffsetY = 0) {
         $this->endOffsetY = $endOffsetY;
     }
 
@@ -361,8 +336,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return int
      */
-    public function getEndOffsetY()
-    {
+    public function getEndOffsetY() {
         return $this->endOffsetY;
     }
 
@@ -373,8 +347,7 @@ class PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer
      *
      * @return int Nesting level
      */
-    public function getNestingLevel()
-    {
+    public function getNestingLevel() {
         $nestingLevel = 0;
 
         $parent = $this->getParent();

@@ -1,7 +1,6 @@
 <?php
 
-class PHPExcel_Helper_HTML
-{
+class PHPExcel_Helper_HTML {
     protected static $colourMap = array(
         'aliceblue' => 'f0f8ff',
         'antiquewhite' => 'faebd7',
@@ -573,8 +572,7 @@ class PHPExcel_Helper_HTML
 
     protected $richTextObject;
 
-    protected function initialise()
-    {
+    protected function initialise() {
         $this->face = $this->size = $this->color = null;
         $this->bold = $this->italic = $this->underline = $this->superscript = $this->subscript = $this->strikethrough = false;
 
@@ -583,8 +581,7 @@ class PHPExcel_Helper_HTML
         $this->stringData = '';
     }
 
-    public function toRichTextObject($html)
-    {
+    public function toRichTextObject($html) {
         $this->initialise();
 
         //  Create a new DOM object
@@ -605,8 +602,7 @@ class PHPExcel_Helper_HTML
         return $this->richTextObject;
     }
 
-    protected function cleanWhitespace()
-    {
+    protected function cleanWhitespace() {
         foreach ($this->richTextObject->getRichTextElements() as $key => $element) {
             $text = $element->getText();
             // Trim any leading spaces on the first run
@@ -619,8 +615,7 @@ class PHPExcel_Helper_HTML
         }
     }
 
-    protected function buildTextRun()
-    {
+    protected function buildTextRun() {
         $text = $this->stringData;
         if (trim($text) === '') {
             return;
@@ -657,8 +652,7 @@ class PHPExcel_Helper_HTML
         $this->stringData = '';
     }
 
-    protected function rgbToColour($rgb)
-    {
+    protected function rgbToColour($rgb) {
         preg_match_all('/\d+/', $rgb, $values);
         foreach ($values[0] as &$value) {
             $value = str_pad(dechex($value), 2, '0', STR_PAD_LEFT);
@@ -666,13 +660,11 @@ class PHPExcel_Helper_HTML
         return implode($values[0]);
     }
 
-    protected function colourNameLookup($rgb)
-    {
+    protected function colourNameLookup($rgb) {
         return self::$colourMap[$rgb];
     }
 
-    protected function startFontTag($tag)
-    {
+    protected function startFontTag($tag) {
         foreach ($tag->attributes as $attribute) {
             $attributeName = strtolower($attribute->name);
             $attributeValue = $attribute->value;
@@ -691,78 +683,63 @@ class PHPExcel_Helper_HTML
         }
     }
 
-    protected function endFontTag()
-    {
+    protected function endFontTag() {
         $this->face = $this->size = $this->color = null;
     }
 
-    protected function startBoldTag()
-    {
+    protected function startBoldTag() {
         $this->bold = true;
     }
 
-    protected function endBoldTag()
-    {
+    protected function endBoldTag() {
         $this->bold = false;
     }
 
-    protected function startItalicTag()
-    {
+    protected function startItalicTag() {
         $this->italic = true;
     }
 
-    protected function endItalicTag()
-    {
+    protected function endItalicTag() {
         $this->italic = false;
     }
 
-    protected function startUnderlineTag()
-    {
+    protected function startUnderlineTag() {
         $this->underline = true;
     }
 
-    protected function endUnderlineTag()
-    {
+    protected function endUnderlineTag() {
         $this->underline = false;
     }
 
-    protected function startSubscriptTag()
-    {
+    protected function startSubscriptTag() {
         $this->subscript = true;
     }
 
-    protected function endSubscriptTag()
-    {
+    protected function endSubscriptTag() {
         $this->subscript = false;
     }
 
-    protected function startSuperscriptTag()
-    {
+    protected function startSuperscriptTag() {
         $this->superscript = true;
     }
 
-    protected function endSuperscriptTag()
-    {
+    protected function endSuperscriptTag() {
         $this->superscript = false;
     }
 
-    protected function startStrikethruTag()
-    {
+    protected function startStrikethruTag() {
         $this->strikethrough = true;
     }
 
-    protected function endStrikethruTag()
-    {
+    protected function endStrikethruTag() {
         $this->strikethrough = false;
     }
 
-    protected function breakTag()
-    {
+    protected function breakTag() {
         $this->stringData .= "\n";
     }
 
-    protected function parseTextNode(DOMText $textNode)
-    {
+    protected function parseTextNode(DOMText $textNode) {
         $domText = preg_replace(
             '/\s+/u',
             ' ',
@@ -772,8 +749,7 @@ class PHPExcel_Helper_HTML
         $this->buildTextRun();
     }
 
-    protected function handleCallback($element, $callbackTag, $callbacks)
-    {
+    protected function handleCallback($element, $callbackTag, $callbacks) {
         if (isset($callbacks[$callbackTag])) {
             $elementHandler = $callbacks[$callbackTag];
             if (method_exists($this, $elementHandler)) {
@@ -782,8 +758,7 @@ class PHPExcel_Helper_HTML
         }
     }
 
-    protected function parseElementNode(DOMElement $element)
-    {
+    protected function parseElementNode(DOMElement $element) {
         $callbackTag = strtolower($element->nodeName);
         $this->stack[] = $callbackTag;
 
@@ -795,8 +770,7 @@ class PHPExcel_Helper_HTML
         $this->handleCallback($element, $callbackTag, $this->endTagCallbacks);
     }
 
-    protected function parseElements(DOMNode $element)
-    {
+    protected function parseElements(DOMNode $element) {
         foreach ($element->childNodes as $child) {
             if ($child instanceof DOMText) {
                 $this->parseTextNode($child);

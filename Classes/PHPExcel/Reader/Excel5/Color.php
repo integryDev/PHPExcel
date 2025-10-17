@@ -1,7 +1,6 @@
 <?php
 
-class PHPExcel_Reader_Excel5_Color
-{
+class PHPExcel_Reader_Excel5_Color {
     /**
      * Read color
      *
@@ -9,8 +8,7 @@ class PHPExcel_Reader_Excel5_Color
      * @param array $palette Color palette
      * @return array RGB color value, example: array('rgb' => 'FF0000')
      */
-    public static function map($color, $palette, $version)
-    {
+    public static function map($color, $palette, $version) {
         if ($color <= 0x07 || $color >= 0x40) {
             // special built-in color
             return PHPExcel_Reader_Excel5_Color_BuiltIn::lookup($color);

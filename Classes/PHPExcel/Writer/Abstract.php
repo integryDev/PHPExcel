@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
-{
+abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter {
     /**
      * Write charts that are defined in the workbook?
      * Identifies whether the Writer should write definitions for any charts that exist in the PHPExcel object;
@@ -56,7 +55,7 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
      *
      * @var string
      */
-    protected $_diskCachingDirectory    = './';
+    protected $_diskCachingDirectory = './';
 
     /**
      * Write charts in workbook?
@@ -65,8 +64,7 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
      *
      * @return    boolean
      */
-    public function getIncludeCharts()
-    {
+    public function getIncludeCharts() {
         return $this->includeCharts;
     }
 
@@ -75,12 +73,11 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
      *        Set to true, to advise the Writer to include any charts that exist in the PHPExcel object.
      *        Set to false (the default) to ignore charts.
      *
-     * @param    boolean    $pValue
+     * @param boolean $pValue
      * @return    PHPExcel_Writer_IWriter
      */
-    public function setIncludeCharts($pValue = false)
-    {
-        $this->includeCharts = (boolean) $pValue;
+    public function setIncludeCharts($pValue = false) {
+        $this->includeCharts = (boolean)$pValue;
         return $this;
     }
 
@@ -94,8 +91,7 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
      *
      * @return boolean
      */
-    public function getPreCalculateFormulas()
-    {
+    public function getPreCalculateFormulas() {
         return $this->preCalculateFormulas;
     }
 
@@ -104,12 +100,11 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
      *        Set to true (the default) to advise the Writer to calculate all formulae on save
      *        Set to false to prevent precalculation of formulae on save.
      *
-     * @param boolean $pValue    Pre-Calculate Formulas?
+     * @param boolean $pValue Pre-Calculate Formulas?
      * @return    PHPExcel_Writer_IWriter
      */
-    public function setPreCalculateFormulas($pValue = true)
-    {
-        $this->preCalculateFormulas = (boolean) $pValue;
+    public function setPreCalculateFormulas($pValue = true) {
+        $this->preCalculateFormulas = (boolean)$pValue;
         return $this;
     }
 
@@ -118,21 +113,19 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
      *
      * @return boolean
      */
-    public function getUseDiskCaching()
-    {
+    public function getUseDiskCaching() {
         return $this->_useDiskCaching;
     }
 
     /**
      * Set use disk caching where possible?
      *
-     * @param     boolean     $pValue
-     * @param    string        $pDirectory        Disk caching directory
-     * @throws    PHPExcel_Writer_Exception    when directory does not exist
+     * @param boolean $pValue
+     * @param string $pDirectory Disk caching directory
      * @return PHPExcel_Writer_Excel2007
+     * @throws    PHPExcel_Writer_Exception    when directory does not exist
      */
-    public function setUseDiskCaching($pValue = false, $pDirectory = null)
-    {
+    public function setUseDiskCaching($pValue = false, $pDirectory = null) {
         $this->_useDiskCaching = $pValue;
 
         if ($pDirectory !== null) {
@@ -150,8 +143,7 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
      *
      * @return string
      */
-    public function getDiskCachingDirectory()
-    {
+    public function getDiskCachingDirectory() {
         return $this->_diskCachingDirectory;
     }
 }

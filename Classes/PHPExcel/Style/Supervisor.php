@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-abstract class PHPExcel_Style_Supervisor
-{
+abstract class PHPExcel_Style_Supervisor {
     /**
      * Supervisor?
      *
@@ -44,12 +43,11 @@ abstract class PHPExcel_Style_Supervisor
     /**
      * Create a new PHPExcel_Style_Alignment
      *
-     * @param    boolean    $isSupervisor    Flag indicating if this is a supervisor or not
+     * @param boolean $isSupervisor Flag indicating if this is a supervisor or not
      *                                    Leave this value at default unless you understand exactly what
      *                                        its ramifications are
      */
-    public function __construct($isSupervisor = false)
-    {
+    public function __construct($isSupervisor = false) {
         // Supervisor?
         $this->isSupervisor = $isSupervisor;
     }
@@ -60,8 +58,7 @@ abstract class PHPExcel_Style_Supervisor
      * @param PHPExcel $parent
      * @return PHPExcel_Style_Supervisor
      */
-    public function bindParent($parent, $parentPropertyName = null)
-    {
+    public function bindParent($parent, $parentPropertyName = null) {
         $this->parent = $parent;
         return $this;
     }
@@ -71,8 +68,7 @@ abstract class PHPExcel_Style_Supervisor
      *
      * @return boolean
      */
-    public function getIsSupervisor()
-    {
+    public function getIsSupervisor() {
         return $this->isSupervisor;
     }
 
@@ -81,8 +77,7 @@ abstract class PHPExcel_Style_Supervisor
      *
      * @return PHPExcel_Worksheet
      */
-    public function getActiveSheet()
-    {
+    public function getActiveSheet() {
         return $this->parent->getActiveSheet();
     }
 
@@ -92,8 +87,7 @@ abstract class PHPExcel_Style_Supervisor
      *
      * @return string E.g. 'A1'
      */
-    public function getSelectedCells()
-    {
+    public function getSelectedCells() {
         return $this->getActiveSheet()->getSelectedCells();
     }
 
@@ -103,16 +97,14 @@ abstract class PHPExcel_Style_Supervisor
      *
      * @return string E.g. 'A1'
      */
-    public function getActiveCell()
-    {
+    public function getActiveCell() {
         return $this->getActiveSheet()->getActiveCell();
     }
 
     /**
      * Implement PHP __clone to create a deep clone, not just a shallow copy.
      */
-    public function __clone()
-    {
+    public function __clone() {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if ((is_object($value)) && ($key != 'parent')) {

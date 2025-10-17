@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-interface PHPExcel_Reader_IReadFilter
-{
+interface PHPExcel_Reader_IReadFilter {
     /**
      * Should this cell be read?
      *

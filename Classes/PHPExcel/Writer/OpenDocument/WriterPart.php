@@ -25,6 +25,5 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-abstract class PHPExcel_Writer_OpenDocument_WriterPart extends PHPExcel_Writer_Excel2007_WriterPart
-{
+abstract class PHPExcel_Writer_OpenDocument_WriterPart extends PHPExcel_Writer_Excel2007_WriterPart {
 }

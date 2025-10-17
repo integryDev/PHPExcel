@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_WorksheetIterator implements Iterator
-{
+class PHPExcel_WorksheetIterator implements Iterator {
     /**
      * Spreadsheet to iterate
      *
@@ -44,10 +43,9 @@ class PHPExcel_WorksheetIterator implements Iterator
     /**
      * Create a new worksheet iterator
      *
-     * @param PHPExcel         $subject
+     * @param PHPExcel $subject
      */
-    public function __construct(PHPExcel $subject = null)
-    {
+    public function __construct(PHPExcel $subject = null) {
         // Set subject
         $this->subject = $subject;
     }
@@ -55,16 +53,14 @@ class PHPExcel_WorksheetIterator implements Iterator
     /**
      * Destructor
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         unset($this->subject);
     }
 
     /**
      * Rewind iterator
      */
-    public function rewind()
-    {
+    public function rewind() {
         $this->position = 0;
     }
 
@@ -73,8 +69,7 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return PHPExcel_Worksheet
      */
-    public function current()
-    {
+    public function current() {
         return $this->subject->getSheet($this->position);
     }
 
@@ -83,16 +78,14 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return int
      */
-    public function key()
-    {
+    public function key() {
         return $this->position;
     }
 
     /**
      * Next value
      */
-    public function next()
-    {
+    public function next() {
         ++$this->position;
     }
 
@@ -101,8 +94,7 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return boolean
      */
-    public function valid()
-    {
+    public function valid() {
         return $this->position < $this->subject->getSheetCount();
     }
 }

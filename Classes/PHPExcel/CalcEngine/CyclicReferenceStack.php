@@ -25,12 +25,11 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_CalcEngine_CyclicReferenceStack
-{
+class PHPExcel_CalcEngine_CyclicReferenceStack {
     /**
      *  The call stack for calculated cells
      *
-     *  @var mixed[]
+     * @var mixed[]
      */
     private $stack = array();
 
@@ -39,18 +38,16 @@ class PHPExcel_CalcEngine_CyclicReferenceStack
      *
      * @return  integer
      */
-    public function count()
-    {
+    public function count() {
         return count($this->stack);
     }
 
     /**
      * Push a new entry onto the stack
      *
-     * @param  mixed  $value
+     * @param mixed $value
      */
-    public function push($value)
-    {
+    public function push($value) {
         $this->stack[$value] = $value;
     }
 
@@ -59,26 +56,23 @@ class PHPExcel_CalcEngine_CyclicReferenceStack
      *
      * @return  mixed
      */
-    public function pop()
-    {
+    public function pop() {
         return array_pop($this->stack);
     }
 
     /**
      * Test to see if a specified entry exists on the stack
      *
-     * @param  mixed  $value  The value to test
+     * @param mixed $value The value to test
      */
-    public function onStack($value)
-    {
+    public function onStack($value) {
         return isset($this->stack[$value]);
     }
 
     /**
      * Clear the stack
      */
-    public function clear()
-    {
+    public function clear() {
         $this->stack = array();
     }
 
@@ -87,8 +81,7 @@ class PHPExcel_CalcEngine_CyclicReferenceStack
      *
      * @return  mixed[]
      */
-    public function showStack()
-    {
+    public function showStack() {
         return $this->stack;
     }
 }

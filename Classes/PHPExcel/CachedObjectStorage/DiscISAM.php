@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage_CacheBase implements PHPExcel_CachedObjectStorage_ICache
-{
+class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage_CacheBase implements PHPExcel_CachedObjectStorage_ICache {
     /**
      * Name of the file for this cache
      *
@@ -55,8 +54,7 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
      * @return    void
      * @throws    PHPExcel_Exception
      */
-    protected function storeData()
-    {
+    protected function storeData() {
         if ($this->currentCellIsDirty && !empty($this->currentObjectID)) {
             $this->currentObject->detach();
 
@@ -64,7 +62,7 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
 
             $this->cellCache[$this->currentObjectID] = array(
                 'ptr' => ftell($this->fileHandle),
-                'sz'  => fwrite($this->fileHandle, serialize($this->currentObject))
+                'sz' => fwrite($this->fileHandle, serialize($this->currentObject))
             );
             $this->currentCellIsDirty = false;
         }
@@ -74,13 +72,12 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
     /**
      * Add or Update a cell in cache identified by coordinate address
      *
-     * @param    string            $pCoord        Coordinate address of the cell to update
-     * @param    PHPExcel_Cell    $cell        Cell to update
+     * @param string $pCoord Coordinate address of the cell to update
+     * @param PHPExcel_Cell $cell Cell to update
      * @return    PHPExcel_Cell
      * @throws    PHPExcel_Exception
      */
-    public function addCacheData($pCoord, PHPExcel_Cell $cell)
-    {
+    public function addCacheData($pCoord, PHPExcel_Cell $cell) {
         if (($pCoord !== $this->currentObjectID) && ($this->currentObjectID !== null)) {
             $this->storeData();
         }
@@ -95,12 +92,11 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
     /**
      * Get cell at a specific coordinate
      *
-     * @param     string             $pCoord        Coordinate of the cell
-     * @throws     PHPExcel_Exception
+     * @param string $pCoord Coordinate of the cell
      * @return     PHPExcel_Cell     Cell that was found, or null if not found
+     * @throws     PHPExcel_Exception
      */
-    public function getCacheData($pCoord)
-    {
+    public function getCacheData($pCoord) {
         if ($pCoord === $this->currentObjectID) {
             return $this->currentObject;
         }
@@ -128,8 +124,7 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
      *
      * @return  string[]
      */
-    public function getCellList()
-    {
+    public function getCellList() {
         if ($this->currentObjectID !== null) {
             $this->storeData();
         }
@@ -140,14 +135,13 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
     /**
      * Clone the cell collection
      *
-     * @param    PHPExcel_Worksheet    $parent        The new worksheet
+     * @param PHPExcel_Worksheet $parent The new worksheet
      */
-    public function copyCellCollection(PHPExcel_Worksheet $parent)
-    {
+    public function copyCellCollection(PHPExcel_Worksheet $parent) {
         parent::copyCellCollection($parent);
         //    Get a new id for the new file name
         $baseUnique = $this->getUniqueID();
-        $newFileName = $this->cacheDirectory.'/PHPExcel.'.$baseUnique.'.cache';
+        $newFileName = $this->cacheDirectory . '/PHPExcel.' . $baseUnique . '.cache';
         //    Copy the existing cell cache file
         copy($this->fileName, $newFileName);
         $this->fileName = $newFileName;
@@ -159,8 +153,7 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
      * Clear the cell collection and disconnect from our parent
      *
      */
-    public function unsetWorksheetCells()
-    {
+    public function unsetWorksheetCells() {
         if (!is_null($this->currentObject)) {
             $this->currentObject->detach();
             $this->currentObject = $this->currentObjectID = null;
@@ -177,19 +170,18 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
     /**
      * Initialise this new cell collection
      *
-     * @param    PHPExcel_Worksheet    $parent        The worksheet for this cell collection
-     * @param    array of mixed        $arguments    Additional initialisation arguments
+     * @param PHPExcel_Worksheet $parent The worksheet for this cell collection
+     * @param array of mixed        $arguments    Additional initialisation arguments
      */
-    public function __construct(PHPExcel_Worksheet $parent, $arguments)
-    {
-        $this->cacheDirectory    = ((isset($arguments['dir'])) && ($arguments['dir'] !== null))
-                                    ? $arguments['dir']
-                                    : PHPExcel_Shared_File::sys_get_temp_dir();
+    public function __construct(PHPExcel_Worksheet $parent, $arguments) {
+        $this->cacheDirectory = ((isset($arguments['dir'])) && ($arguments['dir'] !== null))
+            ? $arguments['dir']
+            : PHPExcel_Shared_File::sys_get_temp_dir();
 
         parent::__construct($parent);
         if (is_null($this->fileHandle)) {
             $baseUnique = $this->getUniqueID();
-            $this->fileName = $this->cacheDirectory.'/PHPExcel.'.$baseUnique.'.cache';
+            $this->fileName = $this->cacheDirectory . '/PHPExcel.' . $baseUnique . '.cache';
             $this->fileHandle = fopen($this->fileName, 'a+');
         }
     }
@@ -197,8 +189,7 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
     /**
      * Destroy this cell collection
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         if (!is_null($this->fileHandle)) {
             fclose($this->fileHandle);
             unlink($this->fileName);

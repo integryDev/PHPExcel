@@ -40,18 +40,16 @@ define('FINANCIAL_PRECISION', 1.0e-08);
  * @license        http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version        ##VERSION##, ##DATE##
  */
-class PHPExcel_Calculation_Financial
-{
+class PHPExcel_Calculation_Financial {
     /**
      * isLastDayOfMonth
      *
      * Returns a boolean TRUE/FALSE indicating if this date is the last date of the month
      *
-     * @param    DateTime    $testDate    The date for testing
+     * @param DateTime $testDate The date for testing
      * @return    boolean
      */
-    private static function isLastDayOfMonth($testDate)
-    {
+    private static function isLastDayOfMonth($testDate) {
         return ($testDate->format('d') == $testDate->format('t'));
     }
 
@@ -61,27 +59,25 @@ class PHPExcel_Calculation_Financial
      *
      * Returns a boolean TRUE/FALSE indicating if this date is the first date of the month
      *
-     * @param    DateTime    $testDate    The date for testing
+     * @param DateTime $testDate The date for testing
      * @return    boolean
      */
-    private static function isFirstDayOfMonth($testDate)
-    {
+    private static function isFirstDayOfMonth($testDate) {
         return ($testDate->format('d') == 1);
     }
 
 
-    private static function couponFirstPeriodDate($settlement, $maturity, $frequency, $next)
-    {
+    private static function couponFirstPeriodDate($settlement, $maturity, $frequency, $next) {
         $months = 12 / $frequency;
 
         $result = PHPExcel_Shared_Date::ExcelToPHPObject($maturity);
         $eom = self::isLastDayOfMonth($result);
 
         while ($settlement < PHPExcel_Shared_Date::PHPToExcel($result)) {
-            $result->modify('-'.$months.' months');
+            $result->modify('-' . $months . ' months');
         }
         if ($next) {
-            $result->modify('+'.$months.' months');
+            $result->modify('+' . $months . ' months');
         }
 
         if ($eom) {
@@ -92,8 +88,7 @@ class PHPExcel_Calculation_Financial
     }
 
 
-    private static function isValidFrequency($frequency)
-    {
+    private static function isValidFrequency($frequency) {
         if (($frequency == 1) || ($frequency == 2) || ($frequency == 4)) {
             return true;
         }
@@ -110,8 +105,8 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the number of days in a specified year, as defined by the "basis" value
      *
-     * @param    integer        $year    The year against which we're testing
-     * @param   integer        $basis    The type of day count:
+     * @param integer $year The year against which we're testing
+     * @param integer $basis The type of day count:
      *                                    0 or omitted US (NASD)    360
      *                                    1                        Actual (365 or 366 in a leap year)
      *                                    2                        360
@@ -119,8 +114,7 @@ class PHPExcel_Calculation_Financial
      *                                    4                        European 360
      * @return    integer
      */
-    private static function daysPerYear($year, $basis = 0)
-    {
+    private static function daysPerYear($year, $basis = 0) {
         switch ($basis) {
             case 0:
             case 2:
@@ -140,11 +134,10 @@ class PHPExcel_Calculation_Financial
     }
 
 
-    private static function interestAndPrincipal($rate = 0, $per = 0, $nper = 0, $pv = 0, $fv = 0, $type = 0)
-    {
+    private static function interestAndPrincipal($rate = 0, $per = 0, $nper = 0, $pv = 0, $fv = 0, $type = 0) {
         $pmt = self::PMT($rate, $nper, $pv, $fv, $type);
         $capital = $pv;
-        for ($i = 1; $i<= $per; ++$i) {
+        for ($i = 1; $i <= $per; ++$i) {
             $interest = ($type && $i == 1) ? 0 : -$capital * $rate;
             $principal = $pmt - $interest;
             $capital += $principal;
@@ -162,16 +155,15 @@ class PHPExcel_Calculation_Financial
      *        ACCRINT(issue,firstinterest,settlement,rate,par,frequency[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    $issue            The security's issue date.
-     * @param    mixed    $firstinterest    The security's first interest date.
-     * @param    mixed    $settlement        The security's settlement date.
+     * @param mixed $issue The security's issue date.
+     * @param mixed $firstinterest The security's first interest date.
+     * @param mixed $settlement The security's settlement date.
      *                                    The security settlement date is the date after the issue date
      *                                    when the security is traded to the buyer.
-     * @param    float    $rate            The security's annual coupon rate.
-     * @param    float    $par            The security's par value.
+     * @param float $rate The security's annual coupon rate.
+     * @param float $par The security's par value.
      *                                    If you omit par, ACCRINT uses $1,000.
-     * @param    integer    $frequency        the number of coupon payments per year.
+     * @param integer $frequency the number of coupon payments per year.
      *                                    Valid frequency values are:
      *                                        1    Annual
      *                                        2    Semi-Annual
@@ -180,28 +172,28 @@ class PHPExcel_Calculation_Financial
      *                                    also available
      *                                        6    Bimonthly
      *                                        12    Monthly
-     * @param    integer    $basis            The type of day count to use.
+     * @param integer $basis The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    float
+     * @category Financial Functions
      */
-    public static function ACCRINT($issue, $firstinterest, $settlement, $rate, $par = 1000, $frequency = 1, $basis = 0)
-    {
-        $issue        = PHPExcel_Calculation_Functions::flattenSingleValue($issue);
-        $firstinterest    = PHPExcel_Calculation_Functions::flattenSingleValue($firstinterest);
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $rate        = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $par        = (is_null($par))        ? 1000 :    PHPExcel_Calculation_Functions::flattenSingleValue($par);
-        $frequency    = (is_null($frequency))    ? 1    :         PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
-        $basis        = (is_null($basis))        ? 0    :        PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function ACCRINT($issue, $firstinterest, $settlement, $rate, $par = 1000, $frequency = 1, $basis = 0) {
+        $issue = PHPExcel_Calculation_Functions::flattenSingleValue($issue);
+        $firstinterest = PHPExcel_Calculation_Functions::flattenSingleValue($firstinterest);
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $par = (is_null($par)) ? 1000 : PHPExcel_Calculation_Functions::flattenSingleValue($par);
+        $frequency = (is_null($frequency)) ? 1 : PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
+        $basis = (is_null($basis)) ? 0 : PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if ((is_numeric($rate)) && (is_numeric($par))) {
-            $rate    = (float) $rate;
-            $par    = (float) $par;
+            $rate = (float)$rate;
+            $par = (float)$par;
             if (($rate <= 0) || ($par <= 0)) {
                 return PHPExcel_Calculation_Functions::NaN();
             }
@@ -226,32 +218,31 @@ class PHPExcel_Calculation_Financial
      *        ACCRINTM(issue,settlement,rate[,par[,basis]])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    issue        The security's issue date.
-     * @param    mixed    settlement    The security's settlement (or maturity) date.
-     * @param    float    rate        The security's annual coupon rate.
-     * @param    float    par            The security's par value.
+     * @param mixed    issue        The security's issue date.
+     * @param mixed    settlement    The security's settlement (or maturity) date.
+     * @param float    rate        The security's annual coupon rate.
+     * @param float    par            The security's par value.
      *                                    If you omit par, ACCRINT uses $1,000.
-     * @param    integer    basis        The type of day count to use.
+     * @param integer    basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    float
+     * @category Financial Functions
      */
-    public static function ACCRINTM($issue, $settlement, $rate, $par = 1000, $basis = 0)
-    {
-        $issue        = PHPExcel_Calculation_Functions::flattenSingleValue($issue);
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $rate        = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $par        = (is_null($par))    ? 1000 :    PHPExcel_Calculation_Functions::flattenSingleValue($par);
-        $basis        = (is_null($basis))    ? 0 :        PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function ACCRINTM($issue, $settlement, $rate, $par = 1000, $basis = 0) {
+        $issue = PHPExcel_Calculation_Functions::flattenSingleValue($issue);
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $par = (is_null($par)) ? 1000 : PHPExcel_Calculation_Functions::flattenSingleValue($par);
+        $basis = (is_null($basis)) ? 0 : PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if ((is_numeric($rate)) && (is_numeric($par))) {
-            $rate    = (float) $rate;
-            $par    = (float) $par;
+            $rate = (float)$rate;
+            $par = (float)$par;
             if (($rate <= 0) || ($par <= 0)) {
                 return PHPExcel_Calculation_Functions::NaN();
             }
@@ -282,30 +273,29 @@ class PHPExcel_Calculation_Financial
      *        AMORDEGRC(cost,purchased,firstPeriod,salvage,period,rate[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    cost        The cost of the asset.
-     * @param    mixed    purchased    Date of the purchase of the asset.
-     * @param    mixed    firstPeriod    Date of the end of the first period.
-     * @param    mixed    salvage        The salvage value at the end of the life of the asset.
-     * @param    float    period        The period.
-     * @param    float    rate        Rate of depreciation.
-     * @param    integer    basis        The type of day count to use.
+     * @param float    cost        The cost of the asset.
+     * @param mixed    purchased    Date of the purchase of the asset.
+     * @param mixed    firstPeriod    Date of the end of the first period.
+     * @param mixed    salvage        The salvage value at the end of the life of the asset.
+     * @param float    period        The period.
+     * @param float    rate        Rate of depreciation.
+     * @param integer    basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    float
+     * @category Financial Functions
      */
-    public static function AMORDEGRC($cost, $purchased, $firstPeriod, $salvage, $period, $rate, $basis = 0)
-    {
-        $cost            = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
-        $purchased        = PHPExcel_Calculation_Functions::flattenSingleValue($purchased);
-        $firstPeriod    = PHPExcel_Calculation_Functions::flattenSingleValue($firstPeriod);
-        $salvage        = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
-        $period            = floor(PHPExcel_Calculation_Functions::flattenSingleValue($period));
-        $rate            = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $basis            = (is_null($basis))    ? 0 :    (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function AMORDEGRC($cost, $purchased, $firstPeriod, $salvage, $period, $rate, $basis = 0) {
+        $cost = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
+        $purchased = PHPExcel_Calculation_Functions::flattenSingleValue($purchased);
+        $firstPeriod = PHPExcel_Calculation_Functions::flattenSingleValue($firstPeriod);
+        $salvage = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
+        $period = floor(PHPExcel_Calculation_Functions::flattenSingleValue($period));
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    The depreciation coefficients are:
         //    Life of assets (1/rate)        Depreciation coefficient
@@ -359,30 +349,29 @@ class PHPExcel_Calculation_Financial
      *        AMORLINC(cost,purchased,firstPeriod,salvage,period,rate[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    cost        The cost of the asset.
-     * @param    mixed    purchased    Date of the purchase of the asset.
-     * @param    mixed    firstPeriod    Date of the end of the first period.
-     * @param    mixed    salvage        The salvage value at the end of the life of the asset.
-     * @param    float    period        The period.
-     * @param    float    rate        Rate of depreciation.
-     * @param    integer    basis        The type of day count to use.
+     * @param float    cost        The cost of the asset.
+     * @param mixed    purchased    Date of the purchase of the asset.
+     * @param mixed    firstPeriod    Date of the end of the first period.
+     * @param mixed    salvage        The salvage value at the end of the life of the asset.
+     * @param float    period        The period.
+     * @param float    rate        Rate of depreciation.
+     * @param integer    basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    float
+     * @category Financial Functions
      */
-    public static function AMORLINC($cost, $purchased, $firstPeriod, $salvage, $period, $rate, $basis = 0)
-    {
-        $cost        = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
-        $purchased   = PHPExcel_Calculation_Functions::flattenSingleValue($purchased);
+    public static function AMORLINC($cost, $purchased, $firstPeriod, $salvage, $period, $rate, $basis = 0) {
+        $cost = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
+        $purchased = PHPExcel_Calculation_Functions::flattenSingleValue($purchased);
         $firstPeriod = PHPExcel_Calculation_Functions::flattenSingleValue($firstPeriod);
-        $salvage     = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
-        $period      = PHPExcel_Calculation_Functions::flattenSingleValue($period);
-        $rate        = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $basis       = (is_null($basis)) ? 0 : (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+        $salvage = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
+        $period = PHPExcel_Calculation_Functions::flattenSingleValue($period);
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         $fOneRate = $cost * $rate;
         $fCostDelta = $cost - $salvage;
@@ -418,13 +407,12 @@ class PHPExcel_Calculation_Financial
      *        COUPDAYBS(settlement,maturity,frequency[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue
      *                                date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    mixed    frequency    the number of coupon payments per year.
+     * @param mixed    frequency    the number of coupon payments per year.
      *                                    Valid frequency values are:
      *                                        1    Annual
      *                                        2    Semi-Annual
@@ -433,20 +421,20 @@ class PHPExcel_Calculation_Financial
      *                                    also available
      *                                        6    Bimonthly
      *                                        12    Monthly
-     * @param    integer        basis        The type of day count to use.
+     * @param integer        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    float
+     * @category Financial Functions
      */
-    public static function COUPDAYBS($settlement, $maturity, $frequency, $basis = 0)
-    {
+    public static function COUPDAYBS($settlement, $maturity, $frequency, $basis = 0) {
         $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity   = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $frequency  = (int) PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
-        $basis      = (is_null($basis)) ? 0 : (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $frequency = (int)PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         if (is_string($settlement = PHPExcel_Calculation_DateTime::getDateValue($settlement))) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -477,13 +465,12 @@ class PHPExcel_Calculation_Financial
      *        COUPDAYS(settlement,maturity,frequency[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue
      *                                date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    mixed    frequency    the number of coupon payments per year.
+     * @param mixed    frequency    the number of coupon payments per year.
      *                                    Valid frequency values are:
      *                                        1    Annual
      *                                        2    Semi-Annual
@@ -492,20 +479,20 @@ class PHPExcel_Calculation_Financial
      *                                    also available
      *                                        6    Bimonthly
      *                                        12    Monthly
-     * @param    integer        basis        The type of day count to use.
+     * @param integer        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    float
+     * @category Financial Functions
      */
-    public static function COUPDAYS($settlement, $maturity, $frequency, $basis = 0)
-    {
+    public static function COUPDAYS($settlement, $maturity, $frequency, $basis = 0) {
         $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity   = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $frequency  = (int) PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
-        $basis      = (is_null($basis)) ? 0 : (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $frequency = (int)PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         if (is_string($settlement = PHPExcel_Calculation_DateTime::getDateValue($settlement))) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -550,13 +537,12 @@ class PHPExcel_Calculation_Financial
      *        COUPDAYSNC(settlement,maturity,frequency[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue
      *                                date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    mixed    frequency    the number of coupon payments per year.
+     * @param mixed    frequency    the number of coupon payments per year.
      *                                    Valid frequency values are:
      *                                        1    Annual
      *                                        2    Semi-Annual
@@ -565,20 +551,20 @@ class PHPExcel_Calculation_Financial
      *                                    also available
      *                                        6    Bimonthly
      *                                        12    Monthly
-     * @param    integer        basis        The type of day count to use.
+     * @param integer        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    float
+     * @category Financial Functions
      */
-    public static function COUPDAYSNC($settlement, $maturity, $frequency, $basis = 0)
-    {
+    public static function COUPDAYSNC($settlement, $maturity, $frequency, $basis = 0) {
         $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity   = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $frequency  = (int) PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
-        $basis      = (is_null($basis)) ? 0 : (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $frequency = (int)PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         if (is_string($settlement = PHPExcel_Calculation_DateTime::getDateValue($settlement))) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -609,13 +595,12 @@ class PHPExcel_Calculation_Financial
      *        COUPNCD(settlement,maturity,frequency[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue
      *                                date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    mixed    frequency    the number of coupon payments per year.
+     * @param mixed    frequency    the number of coupon payments per year.
      *                                    Valid frequency values are:
      *                                        1    Annual
      *                                        2    Semi-Annual
@@ -624,7 +609,7 @@ class PHPExcel_Calculation_Financial
      *                                    also available
      *                                        6    Bimonthly
      *                                        12    Monthly
-     * @param    integer        basis        The type of day count to use.
+     * @param integer        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
@@ -632,13 +617,13 @@ class PHPExcel_Calculation_Financial
      *                                        4                European 30/360
      * @return    mixed    Excel date/time serial value, PHP date/time serial value or PHP date/time object,
      *                        depending on the value of the ReturnDateType flag
+     * @category Financial Functions
      */
-    public static function COUPNCD($settlement, $maturity, $frequency, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $frequency    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
-        $basis        = (is_null($basis))    ? 0 :    (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function COUPNCD($settlement, $maturity, $frequency, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $frequency = (int)PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         if (is_string($settlement = PHPExcel_Calculation_DateTime::getDateValue($settlement))) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -667,13 +652,12 @@ class PHPExcel_Calculation_Financial
      *        COUPNUM(settlement,maturity,frequency[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue
      *                                date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    mixed    frequency    the number of coupon payments per year.
+     * @param mixed    frequency    the number of coupon payments per year.
      *                                    Valid frequency values are:
      *                                        1    Annual
      *                                        2    Semi-Annual
@@ -682,20 +666,20 @@ class PHPExcel_Calculation_Financial
      *                                    also available
      *                                        6    Bimonthly
      *                                        12    Monthly
-     * @param    integer        basis        The type of day count to use.
+     * @param integer        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    integer
+     * @category Financial Functions
      */
-    public static function COUPNUM($settlement, $maturity, $frequency, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $frequency    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
-        $basis        = (is_null($basis))    ? 0 :    (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function COUPNUM($settlement, $maturity, $frequency, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $frequency = (int)PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         if (is_string($settlement = PHPExcel_Calculation_DateTime::getDateValue($settlement))) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -738,13 +722,12 @@ class PHPExcel_Calculation_Financial
      *        COUPPCD(settlement,maturity,frequency[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue
      *                                date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    mixed    frequency    the number of coupon payments per year.
+     * @param mixed    frequency    the number of coupon payments per year.
      *                                    Valid frequency values are:
      *                                        1    Annual
      *                                        2    Semi-Annual
@@ -753,7 +736,7 @@ class PHPExcel_Calculation_Financial
      *                                    also available
      *                                        6    Bimonthly
      *                                        12    Monthly
-     * @param    integer        basis        The type of day count to use.
+     * @param integer        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
@@ -761,13 +744,13 @@ class PHPExcel_Calculation_Financial
      *                                        4                European 30/360
      * @return    mixed    Excel date/time serial value, PHP date/time serial value or PHP date/time object,
      *                        depending on the value of the ReturnDateType flag
+     * @category Financial Functions
      */
-    public static function COUPPCD($settlement, $maturity, $frequency, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $frequency    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
-        $basis        = (is_null($basis))    ? 0 :    (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function COUPPCD($settlement, $maturity, $frequency, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $frequency = (int)PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         if (is_string($settlement = PHPExcel_Calculation_DateTime::getDateValue($settlement))) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -795,26 +778,25 @@ class PHPExcel_Calculation_Financial
      *        CUMIPMT(rate,nper,pv,start,end[,type])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    $rate    The Interest rate
-     * @param    integer    $nper    The total number of payment periods
-     * @param    float    $pv        Present Value
-     * @param    integer    $start    The first period in the calculation.
+     * @param float $rate The Interest rate
+     * @param integer $nper The total number of payment periods
+     * @param float $pv Present Value
+     * @param integer $start The first period in the calculation.
      *                            Payment periods are numbered beginning with 1.
-     * @param    integer    $end    The last period in the calculation.
-     * @param    integer    $type    A number 0 or 1 and indicates when payments are due:
+     * @param integer $end The last period in the calculation.
+     * @param integer $type A number 0 or 1 and indicates when payments are due:
      *                                0 or omitted    At the end of the period.
      *                                1                At the beginning of the period.
      * @return    float
+     * @category Financial Functions
      */
-    public static function CUMIPMT($rate, $nper, $pv, $start, $end, $type = 0)
-    {
-        $rate    = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $nper    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($nper);
-        $pv        = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
-        $start    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($start);
-        $end    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($end);
-        $type    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($type);
+    public static function CUMIPMT($rate, $nper, $pv, $start, $end, $type = 0) {
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $nper = (int)PHPExcel_Calculation_Functions::flattenSingleValue($nper);
+        $pv = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
+        $start = (int)PHPExcel_Calculation_Functions::flattenSingleValue($start);
+        $end = (int)PHPExcel_Calculation_Functions::flattenSingleValue($end);
+        $type = (int)PHPExcel_Calculation_Functions::flattenSingleValue($type);
 
         // Validate parameters
         if ($type != 0 && $type != 1) {
@@ -843,26 +825,25 @@ class PHPExcel_Calculation_Financial
      *        CUMPRINC(rate,nper,pv,start,end[,type])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    $rate    The Interest rate
-     * @param    integer    $nper    The total number of payment periods
-     * @param    float    $pv        Present Value
-     * @param    integer    $start    The first period in the calculation.
+     * @param float $rate The Interest rate
+     * @param integer $nper The total number of payment periods
+     * @param float $pv Present Value
+     * @param integer $start The first period in the calculation.
      *                            Payment periods are numbered beginning with 1.
-     * @param    integer    $end    The last period in the calculation.
-     * @param    integer    $type    A number 0 or 1 and indicates when payments are due:
+     * @param integer $end The last period in the calculation.
+     * @param integer $type A number 0 or 1 and indicates when payments are due:
      *                                0 or omitted    At the end of the period.
      *                                1                At the beginning of the period.
      * @return    float
+     * @category Financial Functions
      */
-    public static function CUMPRINC($rate, $nper, $pv, $start, $end, $type = 0)
-    {
-        $rate    = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $nper    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($nper);
-        $pv        = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
-        $start    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($start);
-        $end    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($end);
-        $type    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($type);
+    public static function CUMPRINC($rate, $nper, $pv, $start, $end, $type = 0) {
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $nper = (int)PHPExcel_Calculation_Functions::flattenSingleValue($nper);
+        $pv = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
+        $start = (int)PHPExcel_Calculation_Functions::flattenSingleValue($start);
+        $end = (int)PHPExcel_Calculation_Functions::flattenSingleValue($end);
+        $type = (int)PHPExcel_Calculation_Functions::flattenSingleValue($type);
 
         // Validate parameters
         if ($type != 0 && $type != 1) {
@@ -896,33 +877,32 @@ class PHPExcel_Calculation_Financial
      *        DB(cost,salvage,life,period[,month])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    cost        Initial cost of the asset.
-     * @param    float    salvage        Value at the end of the depreciation.
+     * @param float    cost        Initial cost of the asset.
+     * @param float    salvage        Value at the end of the depreciation.
      *                                (Sometimes called the salvage value of the asset)
-     * @param    integer    life        Number of periods over which the asset is depreciated.
+     * @param integer    life        Number of periods over which the asset is depreciated.
      *                                (Sometimes called the useful life of the asset)
-     * @param    integer    period        The period for which you want to calculate the
+     * @param integer    period        The period for which you want to calculate the
      *                                depreciation. Period must use the same units as life.
-     * @param    integer    month        Number of months in the first year. If month is omitted,
+     * @param integer    month        Number of months in the first year. If month is omitted,
      *                                it defaults to 12.
      * @return    float
+     * @category Financial Functions
      */
-    public static function DB($cost, $salvage, $life, $period, $month = 12)
-    {
-        $cost        = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
-        $salvage    = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
-        $life        = PHPExcel_Calculation_Functions::flattenSingleValue($life);
-        $period        = PHPExcel_Calculation_Functions::flattenSingleValue($period);
-        $month        = PHPExcel_Calculation_Functions::flattenSingleValue($month);
+    public static function DB($cost, $salvage, $life, $period, $month = 12) {
+        $cost = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
+        $salvage = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
+        $life = PHPExcel_Calculation_Functions::flattenSingleValue($life);
+        $period = PHPExcel_Calculation_Functions::flattenSingleValue($period);
+        $month = PHPExcel_Calculation_Functions::flattenSingleValue($month);
 
         //    Validate
         if ((is_numeric($cost)) && (is_numeric($salvage)) && (is_numeric($life)) && (is_numeric($period)) && (is_numeric($month))) {
-            $cost    = (float) $cost;
-            $salvage = (float) $salvage;
-            $life    = (int) $life;
-            $period  = (int) $period;
-            $month   = (int) $month;
+            $cost = (float)$cost;
+            $salvage = (float)$salvage;
+            $life = (int)$life;
+            $period = (int)$period;
+            $month = (int)$month;
             if ($cost == 0) {
                 return 0.0;
             } elseif (($cost < 0) || (($salvage / $cost) < 0) || ($life <= 0) || ($period < 1) || ($month < 1)) {
@@ -963,34 +943,33 @@ class PHPExcel_Calculation_Financial
      *        DDB(cost,salvage,life,period[,factor])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    cost        Initial cost of the asset.
-     * @param    float    salvage        Value at the end of the depreciation.
+     * @param float    cost        Initial cost of the asset.
+     * @param float    salvage        Value at the end of the depreciation.
      *                                (Sometimes called the salvage value of the asset)
-     * @param    integer    life        Number of periods over which the asset is depreciated.
+     * @param integer    life        Number of periods over which the asset is depreciated.
      *                                (Sometimes called the useful life of the asset)
-     * @param    integer    period        The period for which you want to calculate the
+     * @param integer    period        The period for which you want to calculate the
      *                                depreciation. Period must use the same units as life.
-     * @param    float    factor        The rate at which the balance declines.
+     * @param float    factor        The rate at which the balance declines.
      *                                If factor is omitted, it is assumed to be 2 (the
      *                                double-declining balance method).
      * @return    float
+     * @category Financial Functions
      */
-    public static function DDB($cost, $salvage, $life, $period, $factor = 2.0)
-    {
-        $cost        = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
-        $salvage    = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
-        $life        = PHPExcel_Calculation_Functions::flattenSingleValue($life);
-        $period        = PHPExcel_Calculation_Functions::flattenSingleValue($period);
-        $factor        = PHPExcel_Calculation_Functions::flattenSingleValue($factor);
+    public static function DDB($cost, $salvage, $life, $period, $factor = 2.0) {
+        $cost = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
+        $salvage = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
+        $life = PHPExcel_Calculation_Functions::flattenSingleValue($life);
+        $period = PHPExcel_Calculation_Functions::flattenSingleValue($period);
+        $factor = PHPExcel_Calculation_Functions::flattenSingleValue($factor);
 
         //    Validate
         if ((is_numeric($cost)) && (is_numeric($salvage)) && (is_numeric($life)) && (is_numeric($period)) && (is_numeric($factor))) {
-            $cost    = (float) $cost;
-            $salvage = (float) $salvage;
-            $life    = (int) $life;
-            $period  = (int) $period;
-            $factor  = (float) $factor;
+            $cost = (float)$cost;
+            $salvage = (float)$salvage;
+            $life = (int)$life;
+            $period = (int)$period;
+            $factor = (float)$factor;
             if (($cost <= 0) || (($salvage / $cost) < 0) || ($life <= 0) || ($period < 1) || ($factor <= 0.0) || ($period > $life)) {
                 return PHPExcel_Calculation_Functions::NaN();
             }
@@ -1022,35 +1001,34 @@ class PHPExcel_Calculation_Financial
      *        DISC(settlement,maturity,price,redemption[,basis])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue
      *                                date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    integer    price        The security's price per $100 face value.
-     * @param    integer    redemption    The security's redemption value per $100 face value.
-     * @param    integer    basis        The type of day count to use.
+     * @param integer    price        The security's price per $100 face value.
+     * @param integer    redemption    The security's redemption value per $100 face value.
+     * @param integer    basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
      *                                        3                Actual/365
      *                                        4                European 30/360
      * @return    float
+     * @category Financial Functions
      */
-    public static function DISC($settlement, $maturity, $price, $redemption, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $price        = PHPExcel_Calculation_Functions::flattenSingleValue($price);
-        $redemption    = PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
-        $basis        = PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function DISC($settlement, $maturity, $price, $redemption, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $price = PHPExcel_Calculation_Functions::flattenSingleValue($price);
+        $redemption = PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
+        $basis = PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if ((is_numeric($price)) && (is_numeric($redemption)) && (is_numeric($basis))) {
-            $price        = (float) $price;
-            $redemption    = (float) $redemption;
-            $basis        = (int) $basis;
+            $price = (float)$price;
+            $redemption = (float)$redemption;
+            $basis = (int)$basis;
             if (($price <= 0) || ($redemption <= 0)) {
                 return PHPExcel_Calculation_Functions::NaN();
             }
@@ -1077,15 +1055,14 @@ class PHPExcel_Calculation_Financial
      *        DOLLARDE(fractional_dollar,fraction)
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    $fractional_dollar    Fractional Dollar
-     * @param    integer    $fraction            Fraction
+     * @param float $fractional_dollar Fractional Dollar
+     * @param integer $fraction Fraction
      * @return    float
+     * @category Financial Functions
      */
-    public static function DOLLARDE($fractional_dollar = null, $fraction = 0)
-    {
-        $fractional_dollar    = PHPExcel_Calculation_Functions::flattenSingleValue($fractional_dollar);
-        $fraction            = (int)PHPExcel_Calculation_Functions::flattenSingleValue($fraction);
+    public static function DOLLARDE($fractional_dollar = null, $fraction = 0) {
+        $fractional_dollar = PHPExcel_Calculation_Functions::flattenSingleValue($fractional_dollar);
+        $fraction = (int)PHPExcel_Calculation_Functions::flattenSingleValue($fraction);
 
         // Validate parameters
         if (is_null($fractional_dollar) || $fraction < 0) {
@@ -1114,15 +1091,14 @@ class PHPExcel_Calculation_Financial
      *        DOLLARFR(decimal_dollar,fraction)
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    $decimal_dollar        Decimal Dollar
-     * @param    integer    $fraction            Fraction
+     * @param float $decimal_dollar Decimal Dollar
+     * @param integer $fraction Fraction
      * @return    float
+     * @category Financial Functions
      */
-    public static function DOLLARFR($decimal_dollar = null, $fraction = 0)
-    {
-        $decimal_dollar    = PHPExcel_Calculation_Functions::flattenSingleValue($decimal_dollar);
-        $fraction        = (int)PHPExcel_Calculation_Functions::flattenSingleValue($fraction);
+    public static function DOLLARFR($decimal_dollar = null, $fraction = 0) {
+        $decimal_dollar = PHPExcel_Calculation_Functions::flattenSingleValue($decimal_dollar);
+        $fraction = (int)PHPExcel_Calculation_Functions::flattenSingleValue($fraction);
 
         // Validate parameters
         if (is_null($decimal_dollar) || $fraction < 0) {
@@ -1150,15 +1126,14 @@ class PHPExcel_Calculation_Financial
      *        EFFECT(nominal_rate,npery)
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    $nominal_rate        Nominal interest rate
-     * @param    integer    $npery                Number of compounding payments per year
+     * @param float $nominal_rate Nominal interest rate
+     * @param integer $npery Number of compounding payments per year
      * @return    float
+     * @category Financial Functions
      */
-    public static function EFFECT($nominal_rate = 0, $npery = 0)
-    {
-        $nominal_rate    = PHPExcel_Calculation_Functions::flattenSingleValue($nominal_rate);
-        $npery            = (int)PHPExcel_Calculation_Functions::flattenSingleValue($npery);
+    public static function EFFECT($nominal_rate = 0, $npery = 0) {
+        $nominal_rate = PHPExcel_Calculation_Functions::flattenSingleValue($nominal_rate);
+        $npery = (int)PHPExcel_Calculation_Functions::flattenSingleValue($npery);
 
         // Validate parameters
         if ($nominal_rate <= 0 || $npery < 1) {
@@ -1178,26 +1153,25 @@ class PHPExcel_Calculation_Financial
      *        FV(rate,nper,pmt[,pv[,type]])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    $rate    The interest rate per period
-     * @param    int        $nper    Total number of payment periods in an annuity
-     * @param    float    $pmt    The payment made each period: it cannot change over the
+     * @param float $rate The interest rate per period
+     * @param int $nper Total number of payment periods in an annuity
+     * @param float $pmt The payment made each period: it cannot change over the
      *                            life of the annuity. Typically, pmt contains principal
      *                            and interest but no other fees or taxes.
-     * @param    float    $pv        Present Value, or the lump-sum amount that a series of
+     * @param float $pv Present Value, or the lump-sum amount that a series of
      *                            future payments is worth right now.
-     * @param    integer    $type    A number 0 or 1 and indicates when payments are due:
+     * @param integer $type A number 0 or 1 and indicates when payments are due:
      *                                0 or omitted    At the end of the period.
      *                                1                At the beginning of the period.
      * @return    float
+     * @category Financial Functions
      */
-    public static function FV($rate = 0, $nper = 0, $pmt = 0, $pv = 0, $type = 0)
-    {
-        $rate    = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $nper    = PHPExcel_Calculation_Functions::flattenSingleValue($nper);
-        $pmt    = PHPExcel_Calculation_Functions::flattenSingleValue($pmt);
-        $pv        = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
-        $type    = PHPExcel_Calculation_Functions::flattenSingleValue($type);
+    public static function FV($rate = 0, $nper = 0, $pmt = 0, $pv = 0, $type = 0) {
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $nper = PHPExcel_Calculation_Functions::flattenSingleValue($nper);
+        $pmt = PHPExcel_Calculation_Functions::flattenSingleValue($pmt);
+        $pv = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
+        $type = PHPExcel_Calculation_Functions::flattenSingleValue($type);
 
         // Validate parameters
         if ($type != 0 && $type != 1) {
@@ -1221,14 +1195,13 @@ class PHPExcel_Calculation_Financial
      * Excel Function:
      *        FVSCHEDULE(principal,schedule)
      *
-     * @param    float    $principal    The present value.
-     * @param    float[]    $schedule    An array of interest rates to apply.
+     * @param float $principal The present value.
+     * @param float[] $schedule An array of interest rates to apply.
      * @return    float
      */
-    public static function FVSCHEDULE($principal, $schedule)
-    {
-        $principal    = PHPExcel_Calculation_Functions::flattenSingleValue($principal);
-        $schedule    = PHPExcel_Calculation_Functions::flattenArray($schedule);
+    public static function FVSCHEDULE($principal, $schedule) {
+        $principal = PHPExcel_Calculation_Functions::flattenSingleValue($principal);
+        $schedule = PHPExcel_Calculation_Functions::flattenArray($schedule);
 
         foreach ($schedule as $rate) {
             $principal *= 1 + $rate;
@@ -1246,13 +1219,13 @@ class PHPExcel_Calculation_Financial
      * Excel Function:
      *        INTRATE(settlement,maturity,investment,redemption[,basis])
      *
-     * @param    mixed    $settlement    The security's settlement date.
+     * @param mixed $settlement The security's settlement date.
      *                                The security settlement date is the date after the issue date when the security is traded to the buyer.
-     * @param    mixed    $maturity    The security's maturity date.
+     * @param mixed $maturity The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    integer    $investment    The amount invested in the security.
-     * @param    integer    $redemption    The amount to be received at maturity.
-     * @param    integer    $basis        The type of day count to use.
+     * @param integer $investment The amount invested in the security.
+     * @param integer $redemption The amount to be received at maturity.
+     * @param integer $basis The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
@@ -1260,19 +1233,18 @@ class PHPExcel_Calculation_Financial
      *                                        4                European 30/360
      * @return    float
      */
-    public static function INTRATE($settlement, $maturity, $investment, $redemption, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $investment    = PHPExcel_Calculation_Functions::flattenSingleValue($investment);
-        $redemption    = PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
-        $basis        = PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function INTRATE($settlement, $maturity, $investment, $redemption, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $investment = PHPExcel_Calculation_Functions::flattenSingleValue($investment);
+        $redemption = PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
+        $basis = PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if ((is_numeric($investment)) && (is_numeric($redemption)) && (is_numeric($basis))) {
-            $investment    = (float) $investment;
-            $redemption    = (float) $redemption;
-            $basis        = (int) $basis;
+            $investment = (float)$investment;
+            $redemption = (float)$redemption;
+            $basis = (int)$basis;
             if (($investment <= 0) || ($redemption <= 0)) {
                 return PHPExcel_Calculation_Functions::NaN();
             }
@@ -1296,22 +1268,21 @@ class PHPExcel_Calculation_Financial
      * Excel Function:
      *        IPMT(rate,per,nper,pv[,fv][,type])
      *
-     * @param    float    $rate    Interest rate per period
-     * @param    int        $per    Period for which we want to find the interest
-     * @param    int        $nper    Number of periods
-     * @param    float    $pv        Present Value
-     * @param    float    $fv        Future Value
-     * @param    int        $type    Payment type: 0 = at the end of each period, 1 = at the beginning of each period
+     * @param float $rate Interest rate per period
+     * @param int $per Period for which we want to find the interest
+     * @param int $nper Number of periods
+     * @param float $pv Present Value
+     * @param float $fv Future Value
+     * @param int $type Payment type: 0 = at the end of each period, 1 = at the beginning of each period
      * @return    float
      */
-    public static function IPMT($rate, $per, $nper, $pv, $fv = 0, $type = 0)
-    {
-        $rate    = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $per    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($per);
-        $nper    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($nper);
-        $pv        = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
-        $fv        = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
-        $type    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($type);
+    public static function IPMT($rate, $per, $nper, $pv, $fv = 0, $type = 0) {
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $per = (int)PHPExcel_Calculation_Functions::flattenSingleValue($per);
+        $nper = (int)PHPExcel_Calculation_Functions::flattenSingleValue($nper);
+        $pv = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
+        $fv = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
+        $type = (int)PHPExcel_Calculation_Functions::flattenSingleValue($type);
 
         // Validate parameters
         if ($type != 0 && $type != 1) {
@@ -1338,15 +1309,14 @@ class PHPExcel_Calculation_Financial
      * Excel Function:
      *        IRR(values[,guess])
      *
-     * @param    float[]    $values        An array or a reference to cells that contain numbers for which you want
+     * @param float[] $values An array or a reference to cells that contain numbers for which you want
      *                                    to calculate the internal rate of return.
      *                                Values must contain at least one positive value and one negative value to
      *                                    calculate the internal rate of return.
-     * @param    float    $guess        A number that you guess is close to the result of IRR
+     * @param float $guess A number that you guess is close to the result of IRR
      * @return    float
      */
-    public static function IRR($values, $guess = 0.1)
-    {
+    public static function IRR($values, $guess = 0.1) {
         if (!is_array($values)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
@@ -1412,8 +1382,7 @@ class PHPExcel_Calculation_Financial
      *
      * PV is the loan amount or present value of the payments
      */
-    public static function ISPMT()
-    {
+    public static function ISPMT() {
         // Return value
         $returnValue = 0;
 
@@ -1426,7 +1395,7 @@ class PHPExcel_Calculation_Financial
 
         // Calculate
         $principlePayment = ($principleRemaining * 1.0) / ($numberPeriods * 1.0);
-        for ($i=0; $i <= $period; ++$i) {
+        for ($i = 0; $i <= $period; ++$i) {
             $returnValue = $interestRate * $principleRemaining * -1;
             $principleRemaining -= $principlePayment;
             // principle needs to be 0 after the last payment, don't let floating point screw it up
@@ -1434,7 +1403,7 @@ class PHPExcel_Calculation_Financial
                 $returnValue = 0;
             }
         }
-        return($returnValue);
+        return ($returnValue);
     }
 
 
@@ -1447,21 +1416,20 @@ class PHPExcel_Calculation_Financial
      * Excel Function:
      *        MIRR(values,finance_rate, reinvestment_rate)
      *
-     * @param    float[]    $values                An array or a reference to cells that contain a series of payments and
+     * @param float[] $values An array or a reference to cells that contain a series of payments and
      *                                            income occurring at regular intervals.
      *                                        Payments are negative value, income is positive values.
-     * @param    float    $finance_rate        The interest rate you pay on the money used in the cash flows
-     * @param    float    $reinvestment_rate    The interest rate you receive on the cash flows as you reinvest them
+     * @param float $finance_rate The interest rate you pay on the money used in the cash flows
+     * @param float $reinvestment_rate The interest rate you receive on the cash flows as you reinvest them
      * @return    float
      */
-    public static function MIRR($values, $finance_rate, $reinvestment_rate)
-    {
+    public static function MIRR($values, $finance_rate, $reinvestment_rate) {
         if (!is_array($values)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $values                = PHPExcel_Calculation_Functions::flattenArray($values);
-        $finance_rate        = PHPExcel_Calculation_Functions::flattenSingleValue($finance_rate);
-        $reinvestment_rate    = PHPExcel_Calculation_Functions::flattenSingleValue($reinvestment_rate);
+        $values = PHPExcel_Calculation_Functions::flattenArray($values);
+        $finance_rate = PHPExcel_Calculation_Functions::flattenSingleValue($finance_rate);
+        $reinvestment_rate = PHPExcel_Calculation_Functions::flattenSingleValue($reinvestment_rate);
         $n = count($values);
 
         $rr = 1.0 + $reinvestment_rate;
@@ -1492,14 +1460,13 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the nominal interest rate given the effective rate and the number of compounding payments per year.
      *
-     * @param    float    $effect_rate    Effective interest rate
-     * @param    int        $npery            Number of compounding payments per year
+     * @param float $effect_rate Effective interest rate
+     * @param int $npery Number of compounding payments per year
      * @return    float
      */
-    public static function NOMINAL($effect_rate = 0, $npery = 0)
-    {
-        $effect_rate    = PHPExcel_Calculation_Functions::flattenSingleValue($effect_rate);
-        $npery            = (int)PHPExcel_Calculation_Functions::flattenSingleValue($npery);
+    public static function NOMINAL($effect_rate = 0, $npery = 0) {
+        $effect_rate = PHPExcel_Calculation_Functions::flattenSingleValue($effect_rate);
+        $npery = (int)PHPExcel_Calculation_Functions::flattenSingleValue($npery);
 
         // Validate parameters
         if ($effect_rate <= 0 || $npery < 1) {
@@ -1516,20 +1483,19 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the number of periods for a cash flow with constant periodic payments (annuities), and interest rate.
      *
-     * @param    float    $rate    Interest rate per period
-     * @param    int        $pmt    Periodic payment (annuity)
-     * @param    float    $pv        Present Value
-     * @param    float    $fv        Future Value
-     * @param    int        $type    Payment type: 0 = at the end of each period, 1 = at the beginning of each period
+     * @param float $rate Interest rate per period
+     * @param int $pmt Periodic payment (annuity)
+     * @param float $pv Present Value
+     * @param float $fv Future Value
+     * @param int $type Payment type: 0 = at the end of each period, 1 = at the beginning of each period
      * @return    float
      */
-    public static function NPER($rate = 0, $pmt = 0, $pv = 0, $fv = 0, $type = 0)
-    {
-        $rate    = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $pmt    = PHPExcel_Calculation_Functions::flattenSingleValue($pmt);
-        $pv        = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
-        $fv        = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
-        $type    = PHPExcel_Calculation_Functions::flattenSingleValue($type);
+    public static function NPER($rate = 0, $pmt = 0, $pv = 0, $fv = 0, $type = 0) {
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $pmt = PHPExcel_Calculation_Functions::flattenSingleValue($pmt);
+        $pv = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
+        $fv = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
+        $type = PHPExcel_Calculation_Functions::flattenSingleValue($type);
 
         // Validate parameters
         if ($type != 0 && $type != 1) {
@@ -1546,7 +1512,7 @@ class PHPExcel_Calculation_Financial
         if ($pmt == 0) {
             return PHPExcel_Calculation_Functions::NaN();
         }
-        return (-$pv -$fv) / $pmt;
+        return (-$pv - $fv) / $pmt;
     }
 
     /**
@@ -1556,8 +1522,7 @@ class PHPExcel_Calculation_Financial
      *
      * @return    float
      */
-    public static function NPV()
-    {
+    public static function NPV() {
         // Return value
         $returnValue = 0;
 
@@ -1582,20 +1547,19 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the constant payment (annuity) for a cash flow with a constant interest rate.
      *
-     * @param    float    $rate    Interest rate per period
-     * @param    int        $nper    Number of periods
-     * @param    float    $pv        Present Value
-     * @param    float    $fv        Future Value
-     * @param    int        $type    Payment type: 0 = at the end of each period, 1 = at the beginning of each period
+     * @param float $rate Interest rate per period
+     * @param int $nper Number of periods
+     * @param float $pv Present Value
+     * @param float $fv Future Value
+     * @param int $type Payment type: 0 = at the end of each period, 1 = at the beginning of each period
      * @return    float
      */
-    public static function PMT($rate = 0, $nper = 0, $pv = 0, $fv = 0, $type = 0)
-    {
-        $rate    = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $nper    = PHPExcel_Calculation_Functions::flattenSingleValue($nper);
-        $pv        = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
-        $fv        = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
-        $type    = PHPExcel_Calculation_Functions::flattenSingleValue($type);
+    public static function PMT($rate = 0, $nper = 0, $pv = 0, $fv = 0, $type = 0) {
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $nper = PHPExcel_Calculation_Functions::flattenSingleValue($nper);
+        $pv = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
+        $fv = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
+        $type = PHPExcel_Calculation_Functions::flattenSingleValue($type);
 
         // Validate parameters
         if ($type != 0 && $type != 1) {
@@ -1615,22 +1579,21 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the interest payment for a given period for an investment based on periodic, constant payments and a constant interest rate.
      *
-     * @param    float    $rate    Interest rate per period
-     * @param    int        $per    Period for which we want to find the interest
-     * @param    int        $nper    Number of periods
-     * @param    float    $pv        Present Value
-     * @param    float    $fv        Future Value
-     * @param    int        $type    Payment type: 0 = at the end of each period, 1 = at the beginning of each period
+     * @param float $rate Interest rate per period
+     * @param int $per Period for which we want to find the interest
+     * @param int $nper Number of periods
+     * @param float $pv Present Value
+     * @param float $fv Future Value
+     * @param int $type Payment type: 0 = at the end of each period, 1 = at the beginning of each period
      * @return    float
      */
-    public static function PPMT($rate, $per, $nper, $pv, $fv = 0, $type = 0)
-    {
-        $rate    = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $per    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($per);
-        $nper    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($nper);
-        $pv        = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
-        $fv        = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
-        $type    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($type);
+    public static function PPMT($rate, $per, $nper, $pv, $fv = 0, $type = 0) {
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $per = (int)PHPExcel_Calculation_Functions::flattenSingleValue($per);
+        $nper = (int)PHPExcel_Calculation_Functions::flattenSingleValue($nper);
+        $pv = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
+        $fv = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
+        $type = (int)PHPExcel_Calculation_Functions::flattenSingleValue($type);
 
         // Validate parameters
         if ($type != 0 && $type != 1) {
@@ -1646,15 +1609,14 @@ class PHPExcel_Calculation_Financial
     }
 
 
-    public static function PRICE($settlement, $maturity, $rate, $yield, $redemption, $frequency, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $rate        = (float) PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $yield        = (float) PHPExcel_Calculation_Functions::flattenSingleValue($yield);
-        $redemption    = (float) PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
-        $frequency    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
-        $basis        = (is_null($basis))    ? 0 :    (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function PRICE($settlement, $maturity, $rate, $yield, $redemption, $frequency, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $rate = (float)PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $yield = (float)PHPExcel_Calculation_Functions::flattenSingleValue($yield);
+        $redemption = (float)PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
+        $frequency = (int)PHPExcel_Calculation_Functions::flattenSingleValue($frequency);
+        $basis = (is_null($basis)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         if (is_string($settlement = PHPExcel_Calculation_DateTime::getDateValue($settlement))) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -1674,9 +1636,9 @@ class PHPExcel_Calculation_Financial
         $n = self::COUPNUM($settlement, $maturity, $frequency, $basis);
         $a = self::COUPDAYBS($settlement, $maturity, $frequency, $basis);
 
-        $baseYF    = 1.0 + ($yield / $frequency);
-        $rfp    = 100 * ($rate / $frequency);
-        $de    = $dsc / $e;
+        $baseYF = 1.0 + ($yield / $frequency);
+        $rfp = 100 * ($rate / $frequency);
+        $de = $dsc / $e;
 
         $result = $redemption / pow($baseYF, (--$n + $de));
         for ($k = 0; $k <= $n; ++$k) {
@@ -1693,13 +1655,13 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the price per $100 face value of a discounted security.
      *
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    int        discount    The security's discount rate.
-     * @param    int        redemption    The security's redemption value per $100 face value.
-     * @param    int        basis        The type of day count to use.
+     * @param int        discount    The security's discount rate.
+     * @param int        redemption    The security's redemption value per $100 face value.
+     * @param int        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
@@ -1707,13 +1669,12 @@ class PHPExcel_Calculation_Financial
      *                                        4                European 30/360
      * @return    float
      */
-    public static function PRICEDISC($settlement, $maturity, $discount, $redemption, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $discount    = (float) PHPExcel_Calculation_Functions::flattenSingleValue($discount);
-        $redemption    = (float) PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
-        $basis        = (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function PRICEDISC($settlement, $maturity, $discount, $redemption, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $discount = (float)PHPExcel_Calculation_Functions::flattenSingleValue($discount);
+        $redemption = (float)PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
+        $basis = (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if ((is_numeric($discount)) && (is_numeric($redemption)) && (is_numeric($basis))) {
@@ -1737,14 +1698,14 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the price per $100 face value of a security that pays interest at maturity.
      *
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security's settlement date is the date after the issue date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    mixed    issue        The security's issue date.
-     * @param    int        rate        The security's interest rate at date of issue.
-     * @param    int        yield        The security's annual yield.
-     * @param    int        basis        The type of day count to use.
+     * @param mixed    issue        The security's issue date.
+     * @param int        rate        The security's interest rate at date of issue.
+     * @param int        yield        The security's annual yield.
+     * @param int        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
@@ -1752,14 +1713,13 @@ class PHPExcel_Calculation_Financial
      *                                        4                European 30/360
      * @return    float
      */
-    public static function PRICEMAT($settlement, $maturity, $issue, $rate, $yield, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $issue        = PHPExcel_Calculation_Functions::flattenSingleValue($issue);
-        $rate        = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $yield        = PHPExcel_Calculation_Functions::flattenSingleValue($yield);
-        $basis        = (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function PRICEMAT($settlement, $maturity, $issue, $rate, $yield, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $issue = PHPExcel_Calculation_Functions::flattenSingleValue($issue);
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $yield = PHPExcel_Calculation_Functions::flattenSingleValue($yield);
+        $basis = (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if (is_numeric($rate) && is_numeric($yield)) {
@@ -1790,8 +1750,8 @@ class PHPExcel_Calculation_Financial
             $daysBetweenSettlementAndMaturity *= $daysPerYear;
 
             return ((100 + (($daysBetweenIssueAndMaturity / $daysPerYear) * $rate * 100)) /
-                   (1 + (($daysBetweenSettlementAndMaturity / $daysPerYear) * $yield)) -
-                   (($daysBetweenIssueAndSettlement / $daysPerYear) * $rate * 100));
+                (1 + (($daysBetweenSettlementAndMaturity / $daysPerYear) * $yield)) -
+                (($daysBetweenIssueAndSettlement / $daysPerYear) * $rate * 100));
         }
         return PHPExcel_Calculation_Functions::VALUE();
     }
@@ -1802,20 +1762,19 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the Present Value of a cash flow with constant payments and interest rate (annuities).
      *
-     * @param    float    $rate    Interest rate per period
-     * @param    int        $nper    Number of periods
-     * @param    float    $pmt    Periodic payment (annuity)
-     * @param    float    $fv        Future Value
-     * @param    int        $type    Payment type: 0 = at the end of each period, 1 = at the beginning of each period
+     * @param float $rate Interest rate per period
+     * @param int $nper Number of periods
+     * @param float $pmt Periodic payment (annuity)
+     * @param float $fv Future Value
+     * @param int $type Payment type: 0 = at the end of each period, 1 = at the beginning of each period
      * @return    float
      */
-    public static function PV($rate = 0, $nper = 0, $pmt = 0, $fv = 0, $type = 0)
-    {
-        $rate    = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $nper    = PHPExcel_Calculation_Functions::flattenSingleValue($nper);
-        $pmt    = PHPExcel_Calculation_Functions::flattenSingleValue($pmt);
-        $fv        = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
-        $type    = PHPExcel_Calculation_Functions::flattenSingleValue($type);
+    public static function PV($rate = 0, $nper = 0, $pmt = 0, $fv = 0, $type = 0) {
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $nper = PHPExcel_Calculation_Functions::flattenSingleValue($nper);
+        $pmt = PHPExcel_Calculation_Functions::flattenSingleValue($pmt);
+        $fv = PHPExcel_Calculation_Functions::flattenSingleValue($fv);
+        $type = PHPExcel_Calculation_Functions::flattenSingleValue($type);
 
         // Validate parameters
         if ($type != 0 && $type != 1) {
@@ -1842,32 +1801,31 @@ class PHPExcel_Calculation_Financial
      *        RATE(nper,pmt,pv[,fv[,type[,guess]]])
      *
      * @access    public
-     * @category Financial Functions
-     * @param    float    nper        The total number of payment periods in an annuity.
-     * @param    float    pmt            The payment made each period and cannot change over the life
+     * @param float    nper        The total number of payment periods in an annuity.
+     * @param float    pmt            The payment made each period and cannot change over the life
      *                                    of the annuity.
      *                                Typically, pmt includes principal and interest but no other
      *                                    fees or taxes.
-     * @param    float    pv            The present value - the total amount that a series of future
+     * @param float    pv            The present value - the total amount that a series of future
      *                                    payments is worth now.
-     * @param    float    fv            The future value, or a cash balance you want to attain after
+     * @param float    fv            The future value, or a cash balance you want to attain after
      *                                    the last payment is made. If fv is omitted, it is assumed
      *                                    to be 0 (the future value of a loan, for example, is 0).
-     * @param    integer    type        A number 0 or 1 and indicates when payments are due:
+     * @param integer    type        A number 0 or 1 and indicates when payments are due:
      *                                        0 or omitted    At the end of the period.
      *                                        1                At the beginning of the period.
-     * @param    float    guess        Your guess for what the rate will be.
+     * @param float    guess        Your guess for what the rate will be.
      *                                    If you omit guess, it is assumed to be 10 percent.
      * @return    float
-     **/
-    public static function RATE($nper, $pmt, $pv, $fv = 0.0, $type = 0, $guess = 0.1)
-    {
-        $nper    = (int) PHPExcel_Calculation_Functions::flattenSingleValue($nper);
-        $pmt    = PHPExcel_Calculation_Functions::flattenSingleValue($pmt);
-        $pv        = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
-        $fv        = (is_null($fv))    ? 0.0    :    PHPExcel_Calculation_Functions::flattenSingleValue($fv);
-        $type    = (is_null($type))    ? 0        :    (int) PHPExcel_Calculation_Functions::flattenSingleValue($type);
-        $guess    = (is_null($guess))    ? 0.1    :    PHPExcel_Calculation_Functions::flattenSingleValue($guess);
+     **@category Financial Functions
+     */
+    public static function RATE($nper, $pmt, $pv, $fv = 0.0, $type = 0, $guess = 0.1) {
+        $nper = (int)PHPExcel_Calculation_Functions::flattenSingleValue($nper);
+        $pmt = PHPExcel_Calculation_Functions::flattenSingleValue($pmt);
+        $pv = PHPExcel_Calculation_Functions::flattenSingleValue($pv);
+        $fv = (is_null($fv)) ? 0.0 : PHPExcel_Calculation_Functions::flattenSingleValue($fv);
+        $type = (is_null($type)) ? 0 : (int)PHPExcel_Calculation_Functions::flattenSingleValue($type);
+        $guess = (is_null($guess)) ? 0.1 : PHPExcel_Calculation_Functions::flattenSingleValue($guess);
 
         $rate = $guess;
         if (abs($rate) < FINANCIAL_PRECISION) {
@@ -1880,7 +1838,7 @@ class PHPExcel_Calculation_Financial
         $y1 = $pv * $f + $pmt * (1 / $rate + $type) * ($f - 1) + $fv;
 
         // find root by secant method
-        $i  = $x0 = 0.0;
+        $i = $x0 = 0.0;
         $x1 = $rate;
         while ((abs($y0 - $y1) > FINANCIAL_PRECISION) && ($i < FINANCIAL_MAX_ITERATIONS)) {
             $rate = ($y1 * $x0 - $y0 * $x1) / ($y1 - $y0);
@@ -1909,13 +1867,13 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the price per $100 face value of a discounted security.
      *
-     * @param    mixed    settlement    The security's settlement date.
+     * @param mixed    settlement    The security's settlement date.
      *                                The security settlement date is the date after the issue date when the security is traded to the buyer.
-     * @param    mixed    maturity    The security's maturity date.
+     * @param mixed    maturity    The security's maturity date.
      *                                The maturity date is the date when the security expires.
-     * @param    int        investment    The amount invested in the security.
-     * @param    int        discount    The security's discount rate.
-     * @param    int        basis        The type of day count to use.
+     * @param int        investment    The amount invested in the security.
+     * @param int        discount    The security's discount rate.
+     * @param int        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
@@ -1923,13 +1881,12 @@ class PHPExcel_Calculation_Financial
      *                                        4                European 30/360
      * @return    float
      */
-    public static function RECEIVED($settlement, $maturity, $investment, $discount, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $investment    = (float) PHPExcel_Calculation_Functions::flattenSingleValue($investment);
-        $discount    = (float) PHPExcel_Calculation_Functions::flattenSingleValue($discount);
-        $basis        = (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function RECEIVED($settlement, $maturity, $investment, $discount, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $investment = (float)PHPExcel_Calculation_Functions::flattenSingleValue($investment);
+        $discount = (float)PHPExcel_Calculation_Functions::flattenSingleValue($discount);
+        $basis = (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if ((is_numeric($investment)) && (is_numeric($discount)) && (is_numeric($basis))) {
@@ -1942,7 +1899,7 @@ class PHPExcel_Calculation_Financial
                 return $daysBetweenSettlementAndMaturity;
             }
 
-            return $investment / ( 1 - ($discount * $daysBetweenSettlementAndMaturity));
+            return $investment / (1 - ($discount * $daysBetweenSettlementAndMaturity));
         }
         return PHPExcel_Calculation_Functions::VALUE();
     }
@@ -1953,16 +1910,15 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the straight-line depreciation of an asset for one period
      *
-     * @param    cost        Initial cost of the asset
-     * @param    salvage        Value at the end of the depreciation
-     * @param    life        Number of periods over which the asset is depreciated
+     * @param cost        Initial cost of the asset
+     * @param salvage        Value at the end of the depreciation
+     * @param life        Number of periods over which the asset is depreciated
      * @return    float
      */
-    public static function SLN($cost, $salvage, $life)
-    {
-        $cost        = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
-        $salvage    = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
-        $life        = PHPExcel_Calculation_Functions::flattenSingleValue($life);
+    public static function SLN($cost, $salvage, $life) {
+        $cost = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
+        $salvage = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
+        $life = PHPExcel_Calculation_Functions::flattenSingleValue($life);
 
         // Calculate
         if ((is_numeric($cost)) && (is_numeric($salvage)) && (is_numeric($life))) {
@@ -1980,18 +1936,17 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the sum-of-years' digits depreciation of an asset for a specified period.
      *
-     * @param    cost        Initial cost of the asset
-     * @param    salvage        Value at the end of the depreciation
-     * @param    life        Number of periods over which the asset is depreciated
-     * @param    period        Period
+     * @param cost        Initial cost of the asset
+     * @param salvage        Value at the end of the depreciation
+     * @param life        Number of periods over which the asset is depreciated
+     * @param period        Period
      * @return    float
      */
-    public static function SYD($cost, $salvage, $life, $period)
-    {
-        $cost        = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
-        $salvage    = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
-        $life        = PHPExcel_Calculation_Functions::flattenSingleValue($life);
-        $period        = PHPExcel_Calculation_Functions::flattenSingleValue($period);
+    public static function SYD($cost, $salvage, $life, $period) {
+        $cost = PHPExcel_Calculation_Functions::flattenSingleValue($cost);
+        $salvage = PHPExcel_Calculation_Functions::flattenSingleValue($salvage);
+        $life = PHPExcel_Calculation_Functions::flattenSingleValue($life);
+        $period = PHPExcel_Calculation_Functions::flattenSingleValue($period);
 
         // Calculate
         if ((is_numeric($cost)) && (is_numeric($salvage)) && (is_numeric($life)) && (is_numeric($period))) {
@@ -2009,18 +1964,17 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the bond-equivalent yield for a Treasury bill.
      *
-     * @param    mixed    settlement    The Treasury bill's settlement date.
+     * @param mixed    settlement    The Treasury bill's settlement date.
      *                                The Treasury bill's settlement date is the date after the issue date when the Treasury bill is traded to the buyer.
-     * @param    mixed    maturity    The Treasury bill's maturity date.
+     * @param mixed    maturity    The Treasury bill's maturity date.
      *                                The maturity date is the date when the Treasury bill expires.
-     * @param    int        discount    The Treasury bill's discount rate.
+     * @param int        discount    The Treasury bill's discount rate.
      * @return    float
      */
-    public static function TBILLEQ($settlement, $maturity, $discount)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $discount    = PHPExcel_Calculation_Functions::flattenSingleValue($discount);
+    public static function TBILLEQ($settlement, $maturity, $discount) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $discount = PHPExcel_Calculation_Functions::flattenSingleValue($discount);
 
         //    Use TBILLPRICE for validation
         $testValue = self::TBILLPRICE($settlement, $maturity, $discount);
@@ -2048,18 +2002,17 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the yield for a Treasury bill.
      *
-     * @param    mixed    settlement    The Treasury bill's settlement date.
+     * @param mixed    settlement    The Treasury bill's settlement date.
      *                                The Treasury bill's settlement date is the date after the issue date when the Treasury bill is traded to the buyer.
-     * @param    mixed    maturity    The Treasury bill's maturity date.
+     * @param mixed    maturity    The Treasury bill's maturity date.
      *                                The maturity date is the date when the Treasury bill expires.
-     * @param    int        discount    The Treasury bill's discount rate.
+     * @param int        discount    The Treasury bill's discount rate.
      * @return    float
      */
-    public static function TBILLPRICE($settlement, $maturity, $discount)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $discount    = PHPExcel_Calculation_Functions::flattenSingleValue($discount);
+    public static function TBILLPRICE($settlement, $maturity, $discount) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $discount = PHPExcel_Calculation_Functions::flattenSingleValue($discount);
 
         if (is_string($maturity = PHPExcel_Calculation_DateTime::getDateValue($maturity))) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -2101,18 +2054,17 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the yield for a Treasury bill.
      *
-     * @param    mixed    settlement    The Treasury bill's settlement date.
+     * @param mixed    settlement    The Treasury bill's settlement date.
      *                                The Treasury bill's settlement date is the date after the issue date when the Treasury bill is traded to the buyer.
-     * @param    mixed    maturity    The Treasury bill's maturity date.
+     * @param mixed    maturity    The Treasury bill's maturity date.
      *                                The maturity date is the date when the Treasury bill expires.
-     * @param    int        price        The Treasury bill's price per $100 face value.
+     * @param int        price        The Treasury bill's price per $100 face value.
      * @return    float
      */
-    public static function TBILLYIELD($settlement, $maturity, $price)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $price        = PHPExcel_Calculation_Functions::flattenSingleValue($price);
+    public static function TBILLYIELD($settlement, $maturity, $price) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $price = PHPExcel_Calculation_Functions::flattenSingleValue($price);
 
         //    Validate
         if (is_numeric($price)) {
@@ -2141,14 +2093,13 @@ class PHPExcel_Calculation_Financial
     }
 
 
-    public static function XIRR($values, $dates, $guess = 0.1)
-    {
+    public static function XIRR($values, $dates, $guess = 0.1) {
         if ((!is_array($values)) && (!is_array($dates))) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
         $values = PHPExcel_Calculation_Functions::flattenArray($values);
-        $dates  = PHPExcel_Calculation_Functions::flattenArray($dates);
-        $guess  = PHPExcel_Calculation_Functions::flattenSingleValue($guess);
+        $dates = PHPExcel_Calculation_Functions::flattenArray($dates);
+        $guess = PHPExcel_Calculation_Functions::flattenSingleValue($guess);
         if (count($values) != count($dates)) {
             return PHPExcel_Calculation_Functions::NaN();
         }
@@ -2204,18 +2155,17 @@ class PHPExcel_Calculation_Financial
      * Excel Function:
      *        =XNPV(rate,values,dates)
      *
-     * @param    float            $rate        The discount rate to apply to the cash flows.
-     * @param    array of float    $values     A series of cash flows that corresponds to a schedule of payments in dates.
+     * @param float $rate The discount rate to apply to the cash flows.
+     * @param array of float    $values     A series of cash flows that corresponds to a schedule of payments in dates.
      *                                         The first payment is optional and corresponds to a cost or payment that occurs at the beginning of the investment.
      *                                         If the first value is a cost or payment, it must be a negative value. All succeeding payments are discounted based on a 365-day year.
      *                                         The series of values must contain at least one positive value and one negative value.
-     * @param    array of mixed    $dates      A schedule of payment dates that corresponds to the cash flow payments.
+     * @param array of mixed    $dates      A schedule of payment dates that corresponds to the cash flow payments.
      *                                         The first payment date indicates the beginning of the schedule of payments.
      *                                         All other dates must be later than this date, but they may occur in any order.
      * @return    float
      */
-    public static function XNPV($rate, $values, $dates)
-    {
+    public static function XNPV($rate, $values, $dates) {
         $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
         if (!is_numeric($rate)) {
             return PHPExcel_Calculation_Functions::VALUE();
@@ -2223,8 +2173,8 @@ class PHPExcel_Calculation_Financial
         if ((!is_array($values)) || (!is_array($dates))) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $values    = PHPExcel_Calculation_Functions::flattenArray($values);
-        $dates    = PHPExcel_Calculation_Functions::flattenArray($dates);
+        $values = PHPExcel_Calculation_Functions::flattenArray($values);
+        $dates = PHPExcel_Calculation_Functions::flattenArray($dates);
         $valCount = count($values);
         if ($valCount != count($dates)) {
             return PHPExcel_Calculation_Functions::NaN();
@@ -2249,13 +2199,13 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the annual yield of a security that pays interest at maturity.
      *
-     * @param    mixed    settlement      The security's settlement date.
+     * @param mixed    settlement      The security's settlement date.
      *                                    The security's settlement date is the date after the issue date when the security is traded to the buyer.
-     * @param    mixed    maturity        The security's maturity date.
+     * @param mixed    maturity        The security's maturity date.
      *                                    The maturity date is the date when the security expires.
-     * @param    int        price         The security's price per $100 face value.
-     * @param    int        redemption    The security's redemption value per $100 face value.
-     * @param    int        basis         The type of day count to use.
+     * @param int        price         The security's price per $100 face value.
+     * @param int        redemption    The security's redemption value per $100 face value.
+     * @param int        basis         The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
@@ -2263,13 +2213,12 @@ class PHPExcel_Calculation_Financial
      *                                        4                European 30/360
      * @return    float
      */
-    public static function YIELDDISC($settlement, $maturity, $price, $redemption, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $price        = PHPExcel_Calculation_Functions::flattenSingleValue($price);
-        $redemption    = PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
-        $basis        = (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function YIELDDISC($settlement, $maturity, $price, $redemption, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $price = PHPExcel_Calculation_Functions::flattenSingleValue($price);
+        $redemption = PHPExcel_Calculation_Functions::flattenSingleValue($redemption);
+        $basis = (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if (is_numeric($price) && is_numeric($redemption)) {
@@ -2298,14 +2247,14 @@ class PHPExcel_Calculation_Financial
      *
      * Returns the annual yield of a security that pays interest at maturity.
      *
-     * @param    mixed    settlement     The security's settlement date.
+     * @param mixed    settlement     The security's settlement date.
      *                                   The security's settlement date is the date after the issue date when the security is traded to the buyer.
-     * @param    mixed    maturity       The security's maturity date.
+     * @param mixed    maturity       The security's maturity date.
      *                                   The maturity date is the date when the security expires.
-     * @param    mixed    issue          The security's issue date.
-     * @param    int        rate         The security's interest rate at date of issue.
-     * @param    int        price        The security's price per $100 face value.
-     * @param    int        basis        The type of day count to use.
+     * @param mixed    issue          The security's issue date.
+     * @param int        rate         The security's interest rate at date of issue.
+     * @param int        price        The security's price per $100 face value.
+     * @param int        basis        The type of day count to use.
      *                                        0 or omitted    US (NASD) 30/360
      *                                        1                Actual/actual
      *                                        2                Actual/360
@@ -2313,14 +2262,13 @@ class PHPExcel_Calculation_Financial
      *                                        4                European 30/360
      * @return    float
      */
-    public static function YIELDMAT($settlement, $maturity, $issue, $rate, $price, $basis = 0)
-    {
-        $settlement    = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
-        $maturity    = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
-        $issue        = PHPExcel_Calculation_Functions::flattenSingleValue($issue);
-        $rate        = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
-        $price        = PHPExcel_Calculation_Functions::flattenSingleValue($price);
-        $basis        = (int) PHPExcel_Calculation_Functions::flattenSingleValue($basis);
+    public static function YIELDMAT($settlement, $maturity, $issue, $rate, $price, $basis = 0) {
+        $settlement = PHPExcel_Calculation_Functions::flattenSingleValue($settlement);
+        $maturity = PHPExcel_Calculation_Functions::flattenSingleValue($maturity);
+        $issue = PHPExcel_Calculation_Functions::flattenSingleValue($issue);
+        $rate = PHPExcel_Calculation_Functions::flattenSingleValue($rate);
+        $price = PHPExcel_Calculation_Functions::flattenSingleValue($price);
+        $basis = (int)PHPExcel_Calculation_Functions::flattenSingleValue($basis);
 
         //    Validate
         if (is_numeric($rate) && is_numeric($price)) {
@@ -2351,8 +2299,8 @@ class PHPExcel_Calculation_Financial
             $daysBetweenSettlementAndMaturity *= $daysPerYear;
 
             return ((1 + (($daysBetweenIssueAndMaturity / $daysPerYear) * $rate) - (($price / 100) + (($daysBetweenIssueAndSettlement / $daysPerYear) * $rate))) /
-                   (($price / 100) + (($daysBetweenIssueAndSettlement / $daysPerYear) * $rate))) *
-                   ($daysPerYear / $daysBetweenSettlementAndMaturity);
+                    (($price / 100) + (($daysBetweenIssueAndSettlement / $daysPerYear) * $rate))) *
+                ($daysPerYear / $daysBetweenSettlementAndMaturity);
         }
         return PHPExcel_Calculation_Functions::VALUE();
     }

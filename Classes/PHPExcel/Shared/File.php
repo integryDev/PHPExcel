@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Shared_File
-{
+class PHPExcel_Shared_File {
     /*
      * Use Temp or File Upload Temp for temporary files
      *
@@ -39,11 +38,10 @@ class PHPExcel_Shared_File
     /**
      * Set the flag indicating whether the File Upload Temp directory should be used for temporary files
      *
-     * @param     boolean    $useUploadTempDir        Use File Upload Temporary directory (true or false)
+     * @param boolean $useUploadTempDir Use File Upload Temporary directory (true or false)
      */
-    public static function setUseUploadTempDirectory($useUploadTempDir = false)
-    {
-        self::$useUploadTempDirectory = (boolean) $useUploadTempDir;
+    public static function setUseUploadTempDirectory($useUploadTempDir = false) {
+        self::$useUploadTempDirectory = (boolean)$useUploadTempDir;
     }
 
 
@@ -52,26 +50,24 @@ class PHPExcel_Shared_File
      *
      * @return     boolean    Use File Upload Temporary directory (true or false)
      */
-    public static function getUseUploadTempDirectory()
-    {
+    public static function getUseUploadTempDirectory() {
         return self::$useUploadTempDirectory;
     }
 
 
     /**
-      * Verify if a file exists
-      *
-      * @param     string    $pFilename    Filename
-      * @return bool
-      */
-    public static function file_exists($pFilename)
-    {
+     * Verify if a file exists
+     *
+     * @param string $pFilename Filename
+     * @return bool
+     */
+    public static function file_exists($pFilename) {
         // Sick construction, but it seems that
         // file_exists returns strange values when
         // doing the original file_exists on ZIP archives...
         if (strtolower(substr($pFilename, 0, 3)) == 'zip') {
             // Open ZIP file and verify if the file exists
-            $zipFile     = substr($pFilename, 6, strpos($pFilename, '#') - 6);
+            $zipFile = substr($pFilename, 6, strpos($pFilename, '#') - 6);
             $archiveFile = substr($pFilename, strpos($pFilename, '#') + 1);
 
             $zip = new ZipArchive();
@@ -94,8 +90,7 @@ class PHPExcel_Shared_File
      * @param string $pFilename
      * @return string
      */
-    public static function realpath($pFilename)
-    {
+    public static function realpath($pFilename) {
         // Returnvalue
         $returnValue = '';
 
@@ -128,8 +123,7 @@ class PHPExcel_Shared_File
      *
      * @return string
      */
-    public static function sys_get_temp_dir()
-    {
+    public static function sys_get_temp_dir() {
         if (self::$useUploadTempDirectory) {
             //  use upload-directory when defined to allow running on environments having very restricted
             //      open_basedir configs

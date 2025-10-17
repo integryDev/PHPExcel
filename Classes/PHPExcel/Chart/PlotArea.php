@@ -25,8 +25,7 @@
  * @license        http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version        ##VERSION##, ##DATE##
  */
-class PHPExcel_Chart_PlotArea
-{
+class PHPExcel_Chart_PlotArea {
     /**
      * PlotArea Layout
      *
@@ -44,8 +43,7 @@ class PHPExcel_Chart_PlotArea
     /**
      * Create a new PHPExcel_Chart_PlotArea
      */
-    public function __construct(PHPExcel_Chart_Layout $layout = null, $plotSeries = array())
-    {
+    public function __construct(PHPExcel_Chart_Layout $layout = null, $plotSeries = array()) {
         $this->layout = $layout;
         $this->plotSeries = $plotSeries;
     }
@@ -55,8 +53,7 @@ class PHPExcel_Chart_PlotArea
      *
      * @return PHPExcel_Chart_Layout
      */
-    public function getLayout()
-    {
+    public function getLayout() {
         return $this->layout;
     }
 
@@ -65,8 +62,7 @@ class PHPExcel_Chart_PlotArea
      *
      * @return array of PHPExcel_Chart_DataSeries
      */
-    public function getPlotGroupCount()
-    {
+    public function getPlotGroupCount() {
         return count($this->plotSeries);
     }
 
@@ -75,8 +71,7 @@ class PHPExcel_Chart_PlotArea
      *
      * @return integer
      */
-    public function getPlotSeriesCount()
-    {
+    public function getPlotSeriesCount() {
         $seriesCount = 0;
         foreach ($this->plotSeries as $plot) {
             $seriesCount += $plot->getPlotSeriesCount();
@@ -89,8 +84,7 @@ class PHPExcel_Chart_PlotArea
      *
      * @return array of PHPExcel_Chart_DataSeries
      */
-    public function getPlotGroup()
-    {
+    public function getPlotGroup() {
         return $this->plotSeries;
     }
 
@@ -99,8 +93,7 @@ class PHPExcel_Chart_PlotArea
      *
      * @return PHPExcel_Chart_DataSeries
      */
-    public function getPlotGroupByIndex($index)
-    {
+    public function getPlotGroupByIndex($index) {
         return $this->plotSeries[$index];
     }
 
@@ -110,15 +103,13 @@ class PHPExcel_Chart_PlotArea
      * @param [PHPExcel_Chart_DataSeries]
      * @return PHPExcel_Chart_PlotArea
      */
-    public function setPlotSeries($plotSeries = array())
-    {
+    public function setPlotSeries($plotSeries = array()) {
         $this->plotSeries = $plotSeries;
-        
+
         return $this;
     }
 
-    public function refresh(PHPExcel_Worksheet $worksheet)
-    {
+    public function refresh(PHPExcel_Worksheet $worksheet) {
         foreach ($this->plotSeries as $plotSeries) {
             $plotSeries->refresh($worksheet);
         }

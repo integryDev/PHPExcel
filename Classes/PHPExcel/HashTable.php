@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_HashTable
-{
+class PHPExcel_HashTable {
     /**
      * HashTable elements
      *
@@ -44,11 +43,10 @@ class PHPExcel_HashTable
     /**
      * Create a new PHPExcel_HashTable
      *
-     * @param    PHPExcel_IComparable[] $pSource    Optional source array to create HashTable from
+     * @param PHPExcel_IComparable[] $pSource Optional source array to create HashTable from
      * @throws    PHPExcel_Exception
      */
-    public function __construct($pSource = null)
-    {
+    public function __construct($pSource = null) {
         if ($pSource !== null) {
             // Create HashTable
             $this->addFromSource($pSource);
@@ -58,11 +56,10 @@ class PHPExcel_HashTable
     /**
      * Add HashTable items from source
      *
-     * @param    PHPExcel_IComparable[] $pSource    Source array to create HashTable from
+     * @param PHPExcel_IComparable[] $pSource Source array to create HashTable from
      * @throws    PHPExcel_Exception
      */
-    public function addFromSource($pSource = null)
-    {
+    public function addFromSource($pSource = null) {
         // Check if an array was passed
         if ($pSource == null) {
             return;
@@ -78,11 +75,10 @@ class PHPExcel_HashTable
     /**
      * Add HashTable item
      *
-     * @param    PHPExcel_IComparable $pSource    Item to add
+     * @param PHPExcel_IComparable $pSource Item to add
      * @throws    PHPExcel_Exception
      */
-    public function add(PHPExcel_IComparable $pSource = null)
-    {
+    public function add(PHPExcel_IComparable $pSource = null) {
         $hash = $pSource->getHashCode();
         if (!isset($this->items[$hash])) {
             $this->items[$hash] = $pSource;
@@ -93,11 +89,10 @@ class PHPExcel_HashTable
     /**
      * Remove HashTable item
      *
-     * @param    PHPExcel_IComparable $pSource    Item to remove
+     * @param PHPExcel_IComparable $pSource Item to remove
      * @throws    PHPExcel_Exception
      */
-    public function remove(PHPExcel_IComparable $pSource = null)
-    {
+    public function remove(PHPExcel_IComparable $pSource = null) {
         $hash = $pSource->getHashCode();
         if (isset($this->items[$hash])) {
             unset($this->items[$hash]);
@@ -120,8 +115,7 @@ class PHPExcel_HashTable
      * Clear HashTable
      *
      */
-    public function clear()
-    {
+    public function clear() {
         $this->items = array();
         $this->keyMap = array();
     }
@@ -131,31 +125,28 @@ class PHPExcel_HashTable
      *
      * @return int
      */
-    public function count()
-    {
+    public function count() {
         return count($this->items);
     }
 
     /**
      * Get index for hash code
      *
-     * @param    string    $pHashCode
+     * @param string $pHashCode
      * @return    int    Index
      */
-    public function getIndexForHashCode($pHashCode = '')
-    {
+    public function getIndexForHashCode($pHashCode = '') {
         return array_search($pHashCode, $this->keyMap);
     }
 
     /**
      * Get by index
      *
-     * @param    int    $pIndex
+     * @param int $pIndex
      * @return    PHPExcel_IComparable
      *
      */
-    public function getByIndex($pIndex = 0)
-    {
+    public function getByIndex($pIndex = 0) {
         if (isset($this->keyMap[$pIndex])) {
             return $this->getByHashCode($this->keyMap[$pIndex]);
         }
@@ -166,12 +157,11 @@ class PHPExcel_HashTable
     /**
      * Get by hashcode
      *
-     * @param    string    $pHashCode
+     * @param string $pHashCode
      * @return    PHPExcel_IComparable
      *
      */
-    public function getByHashCode($pHashCode = '')
-    {
+    public function getByHashCode($pHashCode = '') {
         if (isset($this->items[$pHashCode])) {
             return $this->items[$pHashCode];
         }
@@ -184,16 +174,14 @@ class PHPExcel_HashTable
      *
      * @return PHPExcel_IComparable[]
      */
-    public function toArray()
-    {
+    public function toArray() {
         return $this->items;
     }
 
     /**
      * Implement PHP __clone to create a deep clone, not just a shallow copy.
      */
-    public function __clone()
-    {
+    public function __clone() {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if (is_object($value)) {

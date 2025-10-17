@@ -25,21 +25,18 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Calculation_ExceptionHandler
-{
+class PHPExcel_Calculation_ExceptionHandler {
     /**
      * Register errorhandler
      */
-    public function __construct()
-    {
+    public function __construct() {
         set_error_handler(array('PHPExcel_Calculation_Exception', 'errorHandlerCallback'), E_ALL);
     }
 
     /**
      * Unregister errorhandler
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         restore_error_handler();
     }
 }

@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt        LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Reader_Excel5_MD5
-{
+class PHPExcel_Reader_Excel5_MD5 {
     // Context
     private $a;
     private $b;
@@ -36,16 +35,14 @@ class PHPExcel_Reader_Excel5_MD5
     /**
      * MD5 stream constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->reset();
     }
 
     /**
      * Reset the MD5 stream context
      */
-    public function reset()
-    {
+    public function reset() {
         $this->a = 0x67452301;
         $this->b = 0xEFCDAB89;
         $this->c = 0x98BADCFE;
@@ -57,8 +54,7 @@ class PHPExcel_Reader_Excel5_MD5
      *
      * @return string
      */
-    public function getContext()
-    {
+    public function getContext() {
         $s = '';
         foreach (array('a', 'b', 'c', 'd') as $i) {
             $v = $this->{$i};
@@ -76,8 +72,7 @@ class PHPExcel_Reader_Excel5_MD5
      *
      * @param string $data Data to add
      */
-    public function add($data)
-    {
+    public function add($data) {
         $words = array_values(unpack('V16', $data));
 
         $A = $this->a;
@@ -85,10 +80,10 @@ class PHPExcel_Reader_Excel5_MD5
         $C = $this->c;
         $D = $this->d;
 
-        $F = array('PHPExcel_Reader_Excel5_MD5','f');
-        $G = array('PHPExcel_Reader_Excel5_MD5','g');
-        $H = array('PHPExcel_Reader_Excel5_MD5','h');
-        $I = array('PHPExcel_Reader_Excel5_MD5','i');
+        $F = array('PHPExcel_Reader_Excel5_MD5', 'f');
+        $G = array('PHPExcel_Reader_Excel5_MD5', 'g');
+        $H = array('PHPExcel_Reader_Excel5_MD5', 'h');
+        $I = array('PHPExcel_Reader_Excel5_MD5', 'i');
 
         /* ROUND 1 */
         self::step($F, $A, $B, $C, $D, $words[0], 7, 0xd76aa478);
@@ -168,36 +163,30 @@ class PHPExcel_Reader_Excel5_MD5
         $this->d = ($this->d + $D) & 0xffffffff;
     }
 
-    private static function f($X, $Y, $Z)
-    {
-        return (($X & $Y) | ((~ $X) & $Z)); // X AND Y OR NOT X AND Z
+    private static function f($X, $Y, $Z) {
+        return (($X & $Y) | ((~$X) & $Z)); // X AND Y OR NOT X AND Z
     }
 
-    private static function g($X, $Y, $Z)
-    {
-        return (($X & $Z) | ($Y & (~ $Z))); // X AND Z OR Y AND NOT Z
+    private static function g($X, $Y, $Z) {
+        return (($X & $Z) | ($Y & (~$Z))); // X AND Z OR Y AND NOT Z
     }
 
-    private static function h($X, $Y, $Z)
-    {
+    private static function h($X, $Y, $Z) {
         return ($X ^ $Y ^ $Z); // X XOR Y XOR Z
     }
 
-    private static function i($X, $Y, $Z)
-    {
-        return ($Y ^ ($X | (~ $Z))) ; // Y XOR (X OR NOT Z)
+    private static function i($X, $Y, $Z) {
+        return ($Y ^ ($X | (~$Z))); // Y XOR (X OR NOT Z)
     }
 
-    private static function step($func, &$A, $B, $C, $D, $M, $s, $t)
-    {
+    private static function step($func, &$A, $B, $C, $D, $M, $s, $t) {
         $A = ($A + call_user_func($func, $B, $C, $D) + $M + $t) & 0xffffffff;
         $A = self::rotate($A, $s);
         $A = ($B + $A) & 0xffffffff;
     }
 
-    private static function rotate($decimal, $bits)
-    {
+    private static function rotate($decimal, $bits) {
         $binary = str_pad(decbin($decimal), 32, "0", STR_PAD_LEFT);
-        return bindec(substr($binary, $bits).substr($binary, 0, $bits));
+        return bindec(substr($binary, $bits) . substr($binary, 0, $bits));
     }
 }

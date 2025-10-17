@@ -25,12 +25,11 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHPExcel_IComparable
-{
+class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHPExcel_IComparable {
     /** Protection styles */
-    const PROTECTION_INHERIT      = 'inherit';
-    const PROTECTION_PROTECTED    = 'protected';
-    const PROTECTION_UNPROTECTED  = 'unprotected';
+    const PROTECTION_INHERIT = 'inherit';
+    const PROTECTION_PROTECTED = 'protected';
+    const PROTECTION_UNPROTECTED = 'unprotected';
 
     /**
      * Locked
@@ -49,15 +48,14 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
     /**
      * Create a new PHPExcel_Style_Protection
      *
-     * @param    boolean    $isSupervisor    Flag indicating if this is a supervisor or not
+     * @param boolean $isSupervisor Flag indicating if this is a supervisor or not
      *                                    Leave this value at default unless you understand exactly what
      *                                        its ramifications are
-     * @param    boolean    $isConditional    Flag indicating if this is a conditional style or not
+     * @param boolean $isConditional Flag indicating if this is a conditional style or not
      *                                    Leave this value at default unless you understand exactly what
      *                                        its ramifications are
      */
-    public function __construct($isSupervisor = false, $isConditional = false)
-    {
+    public function __construct($isSupervisor = false, $isConditional = false) {
         // Supervisor?
         parent::__construct($isSupervisor);
 
@@ -74,8 +72,7 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
      *
      * @return PHPExcel_Style_Protection
      */
-    public function getSharedComponent()
-    {
+    public function getSharedComponent() {
         return $this->parent->getSharedComponent()->getProtection();
     }
 
@@ -85,8 +82,7 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
      * @param array $array
      * @return array
      */
-    public function getStyleArray($array)
-    {
+    public function getStyleArray($array) {
         return array('protection' => $array);
     }
 
@@ -102,12 +98,11 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
      * );
      * </code>
      *
-     * @param    array    $pStyles    Array containing style information
-     * @throws    PHPExcel_Exception
+     * @param array $pStyles Array containing style information
      * @return PHPExcel_Style_Protection
+     * @throws    PHPExcel_Exception
      */
-    public function applyFromArray($pStyles = null)
-    {
+    public function applyFromArray($pStyles = null) {
         if (is_array($pStyles)) {
             if ($this->isSupervisor) {
                 $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($this->getStyleArray($pStyles));
@@ -130,8 +125,7 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
      *
      * @return string
      */
-    public function getLocked()
-    {
+    public function getLocked() {
         if ($this->isSupervisor) {
             return $this->getSharedComponent()->getLocked();
         }
@@ -144,8 +138,7 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
      * @param string $pValue
      * @return PHPExcel_Style_Protection
      */
-    public function setLocked($pValue = self::PROTECTION_INHERIT)
-    {
+    public function setLocked($pValue = self::PROTECTION_INHERIT) {
         if ($this->isSupervisor) {
             $styleArray = $this->getStyleArray(array('locked' => $pValue));
             $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($styleArray);
@@ -160,8 +153,7 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
      *
      * @return string
      */
-    public function getHidden()
-    {
+    public function getHidden() {
         if ($this->isSupervisor) {
             return $this->getSharedComponent()->getHidden();
         }
@@ -174,8 +166,7 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
      * @param string $pValue
      * @return PHPExcel_Style_Protection
      */
-    public function setHidden($pValue = self::PROTECTION_INHERIT)
-    {
+    public function setHidden($pValue = self::PROTECTION_INHERIT) {
         if ($this->isSupervisor) {
             $styleArray = $this->getStyleArray(array('hidden' => $pValue));
             $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($styleArray);
@@ -190,8 +181,7 @@ class PHPExcel_Style_Protection extends PHPExcel_Style_Supervisor implements PHP
      *
      * @return string    Hash code
      */
-    public function getHashCode()
-    {
+    public function getHashCode() {
         if ($this->isSupervisor) {
             return $this->getSharedComponent()->getHashCode();
         }

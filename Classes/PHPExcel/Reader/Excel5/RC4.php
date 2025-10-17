@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Reader_Excel5_RC4
-{
+class PHPExcel_Reader_Excel5_RC4 {
     // Context
     protected $s = array();
     protected $i = 0;
@@ -37,8 +36,7 @@ class PHPExcel_Reader_Excel5_RC4
      *
      * @param string $key Encryption key/passphrase
      */
-    public function __construct($key)
-    {
+    public function __construct($key) {
         $len = strlen($key);
 
         for ($this->i = 0; $this->i < 256; $this->i++) {
@@ -62,8 +60,7 @@ class PHPExcel_Reader_Excel5_RC4
      *
      * @return string
      */
-    public function RC4($data)
-    {
+    public function RC4($data) {
         $len = strlen($data);
         for ($c = 0; $c < $len; $c++) {
             $this->i = ($this->i + 1) % 256;

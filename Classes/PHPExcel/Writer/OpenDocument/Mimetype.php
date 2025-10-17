@@ -25,17 +25,15 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Writer_OpenDocument_Mimetype extends PHPExcel_Writer_OpenDocument_WriterPart
-{
+class PHPExcel_Writer_OpenDocument_Mimetype extends PHPExcel_Writer_OpenDocument_WriterPart {
     /**
      * Write mimetype to plain text format
      *
-     * @param     PHPExcel    $pPHPExcel
+     * @param PHPExcel $pPHPExcel
      * @return     string         XML Output
      * @throws     PHPExcel_Writer_Exception
      */
-    public function write(PHPExcel $pPHPExcel = null)
-    {
+    public function write(PHPExcel $pPHPExcel = null) {
         return 'application/vnd.oasis.opendocument.spreadsheet';
     }
 }

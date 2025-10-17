@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Cell_Hyperlink
-{
+class PHPExcel_Cell_Hyperlink {
     /**
      * URL to link the cell to
      *
@@ -44,13 +43,12 @@ class PHPExcel_Cell_Hyperlink
     /**
      * Create a new PHPExcel_Cell_Hyperlink
      *
-     * @param  string  $pUrl      Url to link the cell to
-     * @param  string  $pTooltip  Tooltip to display on the hyperlink
+     * @param string $pUrl Url to link the cell to
+     * @param string $pTooltip Tooltip to display on the hyperlink
      */
-    public function __construct($pUrl = '', $pTooltip = '')
-    {
+    public function __construct($pUrl = '', $pTooltip = '') {
         // Initialise member variables
-        $this->url     = $pUrl;
+        $this->url = $pUrl;
         $this->tooltip = $pTooltip;
     }
 
@@ -59,19 +57,17 @@ class PHPExcel_Cell_Hyperlink
      *
      * @return string
      */
-    public function getUrl()
-    {
+    public function getUrl() {
         return $this->url;
     }
 
     /**
      * Set URL
      *
-     * @param  string    $value
+     * @param string $value
      * @return PHPExcel_Cell_Hyperlink
      */
-    public function setUrl($value = '')
-    {
+    public function setUrl($value = '') {
         $this->url = $value;
         return $this;
     }
@@ -81,19 +77,17 @@ class PHPExcel_Cell_Hyperlink
      *
      * @return string
      */
-    public function getTooltip()
-    {
+    public function getTooltip() {
         return $this->tooltip;
     }
 
     /**
      * Set tooltip
      *
-     * @param  string    $value
+     * @param string $value
      * @return PHPExcel_Cell_Hyperlink
      */
-    public function setTooltip($value = '')
-    {
+    public function setTooltip($value = '') {
         $this->tooltip = $value;
         return $this;
     }
@@ -103,8 +97,7 @@ class PHPExcel_Cell_Hyperlink
      *
      * @return boolean
      */
-    public function isInternal()
-    {
+    public function isInternal() {
         return strpos($this->url, 'sheet://') !== false;
     }
 
@@ -113,8 +106,7 @@ class PHPExcel_Cell_Hyperlink
      *
      * @return string    Hash code
      */
-    public function getHashCode()
-    {
+    public function getHashCode() {
         return md5(
             $this->url .
             $this->tooltip .

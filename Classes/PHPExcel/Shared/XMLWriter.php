@@ -33,27 +33,25 @@ if (!defined('DEBUGMODE_ENABLED')) {
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Shared_XMLWriter extends XMLWriter
-{
+class PHPExcel_Shared_XMLWriter extends XMLWriter {
     /** Temporary storage method */
-    const STORAGE_MEMORY    = 1;
-    const STORAGE_DISK      = 2;
+    const STORAGE_MEMORY = 1;
+    const STORAGE_DISK = 2;
 
     /**
      * Temporary filename
      *
      * @var string
      */
-    private $tempFileName  = '';
+    private $tempFileName = '';
 
     /**
      * Create a new PHPExcel_Shared_XMLWriter instance
      *
-     * @param int      $pTemporaryStorage        Temporary storage location
-     * @param string   $pTemporaryStorageFolder  Temporary storage folder
+     * @param int $pTemporaryStorage Temporary storage location
+     * @param string $pTemporaryStorageFolder Temporary storage folder
      */
-    public function __construct($pTemporaryStorage = self::STORAGE_MEMORY, $pTemporaryStorageFolder = null)
-    {
+    public function __construct($pTemporaryStorage = self::STORAGE_MEMORY, $pTemporaryStorageFolder = null) {
         // Open temporary storage
         if ($pTemporaryStorage == self::STORAGE_MEMORY) {
             $this->openMemory();
@@ -80,8 +78,7 @@ class PHPExcel_Shared_XMLWriter extends XMLWriter
     /**
      * Destructor
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         // Unlink temporary files
         if ($this->tempFileName != '') {
             @unlink($this->tempFileName);
@@ -93,8 +90,7 @@ class PHPExcel_Shared_XMLWriter extends XMLWriter
      *
      * @return $data
      */
-    public function getData()
-    {
+    public function getData() {
         if ($this->tempFileName == '') {
             return $this->outputMemory(true);
         } else {
@@ -109,8 +105,7 @@ class PHPExcel_Shared_XMLWriter extends XMLWriter
      * @param string $text
      * @return string
      */
-    public function writeRawData($text)
-    {
+    public function writeRawData($text) {
         if (is_array($text)) {
             $text = implode("\n", $text);
         }

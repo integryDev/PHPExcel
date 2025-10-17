@@ -1,7 +1,6 @@
 <?php
 
-class PHPExcel_Reader_Excel5_Color_BIFF8
-{
+class PHPExcel_Reader_Excel5_Color_BIFF8 {
     protected static $map = array(
         0x08 => '000000',
         0x09 => 'FFFFFF',
@@ -61,14 +60,13 @@ class PHPExcel_Reader_Excel5_Color_BIFF8
         0x3F => '333333',
     );
 
-   /**
+    /**
      * Map color array from BIFF8 built-in color index
      *
      * @param int $color
      * @return array
      */
-    public static function lookup($color)
-    {
+    public static function lookup($color) {
         if (isset(self::$map[$color])) {
             return array('rgb' => self::$map[$color]);
         }

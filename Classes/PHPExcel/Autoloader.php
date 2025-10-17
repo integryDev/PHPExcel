@@ -35,14 +35,12 @@ PHPExcel_Shared_String::buildCharacterSets();
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Autoloader
-{
+class PHPExcel_Autoloader {
     /**
      * Register the Autoloader with SPL
      *
      */
-    public static function register()
-    {
+    public static function register() {
         if (function_exists('__autoload')) {
             // Register any existing autoloader function with SPL, so we don't get any clashes
             spl_autoload_register('__autoload');
@@ -58,10 +56,9 @@ class PHPExcel_Autoloader
     /**
      * Autoload a class identified by name
      *
-     * @param    string    $pClassName        Name of the object to load
+     * @param string $pClassName Name of the object to load
      */
-    public static function load($pClassName)
-    {
+    public static function load($pClassName) {
         if ((class_exists($pClassName, false)) || (strpos($pClassName, 'PHPExcel') !== 0)) {
             // Either already loaded, or not a PHPExcel class request
             return false;

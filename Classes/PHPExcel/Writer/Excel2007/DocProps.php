@@ -25,17 +25,15 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Writer_Excel2007_DocProps extends PHPExcel_Writer_Excel2007_WriterPart
-{
+class PHPExcel_Writer_Excel2007_DocProps extends PHPExcel_Writer_Excel2007_WriterPart {
     /**
      * Write docProps/app.xml to XML format
      *
-     * @param     PHPExcel    $pPHPExcel
+     * @param PHPExcel $pPHPExcel
      * @return     string         XML Output
      * @throws     PHPExcel_Writer_Exception
      */
-    public function writeDocPropsApp(PHPExcel $pPHPExcel = null)
-    {
+    public function writeDocPropsApp(PHPExcel $pPHPExcel = null) {
         // Create XML writer
         $objWriter = null;
         if ($this->getParentWriter()->getUseDiskCaching()) {
@@ -127,12 +125,11 @@ class PHPExcel_Writer_Excel2007_DocProps extends PHPExcel_Writer_Excel2007_Write
     /**
      * Write docProps/core.xml to XML format
      *
-     * @param     PHPExcel    $pPHPExcel
+     * @param PHPExcel $pPHPExcel
      * @return     string         XML Output
      * @throws     PHPExcel_Writer_Exception
      */
-    public function writeDocPropsCore(PHPExcel $pPHPExcel = null)
-    {
+    public function writeDocPropsCore(PHPExcel $pPHPExcel = null) {
         // Create XML writer
         $objWriter = null;
         if ($this->getParentWriter()->getUseDiskCaching()) {
@@ -194,12 +191,11 @@ class PHPExcel_Writer_Excel2007_DocProps extends PHPExcel_Writer_Excel2007_Write
     /**
      * Write docProps/custom.xml to XML format
      *
-     * @param     PHPExcel    $pPHPExcel
+     * @param PHPExcel $pPHPExcel
      * @return     string         XML Output
      * @throws     PHPExcel_Writer_Exception
      */
-    public function writeDocPropsCustom(PHPExcel $pPHPExcel = null)
-    {
+    public function writeDocPropsCustom(PHPExcel $pPHPExcel = null) {
         $customPropertyList = $pPHPExcel->getProperties()->getCustomProperties();
         if (empty($customPropertyList)) {
             return;
@@ -228,7 +224,7 @@ class PHPExcel_Writer_Excel2007_DocProps extends PHPExcel_Writer_Excel2007_Write
 
             $objWriter->startElement('property');
             $objWriter->writeAttribute('fmtid', '{D5CDD505-2E9C-101B-9397-08002B2CF9AE}');
-            $objWriter->writeAttribute('pid', $key+2);
+            $objWriter->writeAttribute('pid', $key + 2);
             $objWriter->writeAttribute('name', $customProperty);
 
             switch ($propertyType) {

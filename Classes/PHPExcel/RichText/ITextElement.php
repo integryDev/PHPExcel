@@ -23,8 +23,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-interface PHPExcel_RichText_ITextElement
-{
+interface PHPExcel_RichText_ITextElement {
     /**
      * Get text
      *

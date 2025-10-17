@@ -25,8 +25,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version ##VERSION##, ##DATE##
  */
-class PHPExcel_Shared_OLE_ChainedBlockStream
-{
+class PHPExcel_Shared_OLE_ChainedBlockStream {
     /**
      * The OLE container of the file that is being read.
      * @var OLE
@@ -55,15 +54,14 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
      * Implements support for fopen().
      * For creating streams using this wrapper, use OLE_PPS_File::getStream().
      *
-     * @param    string    $path            resource name including scheme, e.g.
+     * @param string $path resource name including scheme, e.g.
      *                                    ole-chainedblockstream://oleInstanceId=1
-     * @param    string    $mode            only "r" is supported
-     * @param    int        $options        mask of STREAM_REPORT_ERRORS and STREAM_USE_PATH
-     * @param    string  &$openedPath    absolute path of the opened stream (out parameter)
+     * @param string $mode only "r" is supported
+     * @param int $options mask of STREAM_REPORT_ERRORS and STREAM_USE_PATH
+     * @param string  &$openedPath absolute path of the opened stream (out parameter)
      * @return    bool    true on success
      */
-    public function stream_open($path, $mode, $options, &$openedPath)
-    {
+    public function stream_open($path, $mode, $options, &$openedPath) {
         if ($mode != 'r') {
             if ($options & STREAM_REPORT_ERRORS) {
                 trigger_error('Only reading is supported', E_USER_WARNING);
@@ -116,8 +114,7 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
      * Implements support for fclose().
      *
      */
-    public function stream_close()
-    {
+    public function stream_close() {
         $this->ole = null;
         unset($GLOBALS['_OLE_INSTANCES']);
     }
@@ -125,11 +122,10 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
     /**
      * Implements support for fread(), fgets() etc.
      *
-     * @param   int        $count    maximum number of bytes to read
+     * @param int $count maximum number of bytes to read
      * @return  string
      */
-    public function stream_read($count)
-    {
+    public function stream_read($count) {
         if ($this->stream_eof()) {
             return false;
         }
@@ -143,8 +139,7 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
      *
      * @return  bool  TRUE if the file pointer is at EOF; otherwise FALSE
      */
-    public function stream_eof()
-    {
+    public function stream_eof() {
         return $this->pos >= strlen($this->data);
     }
 
@@ -154,20 +149,18 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
      *
      * @return  int
      */
-    public function stream_tell()
-    {
+    public function stream_tell() {
         return $this->pos;
     }
 
     /**
      * Implements support for fseek().
      *
-     * @param    int        $offset    byte offset
-     * @param    int        $whence    SEEK_SET, SEEK_CUR or SEEK_END
+     * @param int $offset byte offset
+     * @param int $whence SEEK_SET, SEEK_CUR or SEEK_END
      * @return    bool
      */
-    public function stream_seek($offset, $whence)
-    {
+    public function stream_seek($offset, $whence) {
         if ($whence == SEEK_SET && $offset >= 0) {
             $this->pos = $offset;
         } elseif ($whence == SEEK_CUR && -$offset <= $this->pos) {
@@ -185,11 +178,10 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
      * "size".
      * @return  array
      */
-    public function stream_stat()
-    {
+    public function stream_stat() {
         return array(
             'size' => strlen($this->data),
-            );
+        );
     }
 
     // Methods used by stream_wrapper_register() that are not implemented:
